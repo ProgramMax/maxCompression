@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>18.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{80ac786e-afe7-4dc3-8972-3b1ef838c3be}</ProjectGuid>
+    <RootNamespace>PerformanceTests</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PublicIncludeDirectories>$(PublicIncludeDirectories)</PublicIncludeDirectories>
+    <IncludePath>$(ProjectDir)..\..\Dependencies\benchmark\include\;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)\$(MSBuildProjectName)\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\$(MSBuildProjectName)\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <PublicIncludeDirectories>$(PublicIncludeDirectories)</PublicIncludeDirectories>
+    <IncludePath>$(ProjectDir)..\..\Dependencies\benchmark\include\;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)\$(MSBuildProjectName)\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\$(MSBuildProjectName)\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PublicIncludeDirectories>$(PublicIncludeDirectories)</PublicIncludeDirectories>
+    <IncludePath>$(ProjectDir)..\..\Dependencies\benchmark\include\;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)\$(MSBuildProjectName)\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\$(MSBuildProjectName)\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <PublicIncludeDirectories>$(PublicIncludeDirectories)</PublicIncludeDirectories>
+    <IncludePath>$(ProjectDir)..\..\Dependencies\benchmark\include\;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)\$(MSBuildProjectName)\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\$(MSBuildProjectName)\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BENCHMARK_STATIC_DEFINE;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BENCHMARK_STATIC_DEFINE;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BENCHMARK_STATIC_DEFINE;_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BENCHMARK_STATIC_DEFINE;_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Code\NaiveHuffman.hpp" />
+    <ClInclude Include="..\..\Code\NaiveLZ77.hpp" />
+    <ClInclude Include="..\..\Dependencies\benchmark\include\benchmark\benchmark.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\include\benchmark\benchmark_api.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\include\benchmark\counter.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\include\benchmark\export.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\include\benchmark\macros.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\include\benchmark\managers.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\include\benchmark\registration.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\include\benchmark\reporter.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\include\benchmark\state.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\include\benchmark\statistics.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\include\benchmark\sysinfo.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\include\benchmark\types.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\include\benchmark\utils.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\src\arraysize.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\src\benchmark_api_internal.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\src\benchmark_register.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\src\benchmark_runner.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\src\check.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\src\colorprint.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\src\commandlineflags.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\src\complexity.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\src\counter.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\src\cycleclock.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\src\internal_macros.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\src\log.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\src\mutex.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\src\perf_counters.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\src\re.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\src\statistics.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\src\string_util.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\src\thread_manager.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\src\thread_timer.h" />
+    <ClInclude Include="..\..\Dependencies\benchmark\src\timers.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Code\NaiveHuffman.cpp" />
+    <ClCompile Include="..\..\Code\NaiveLZ77.cpp" />
+    <ClCompile Include="..\..\Code\PerformanceTestsEntryPoint.cpp" />
+    <ClCompile Include="..\..\Dependencies\benchmark\src\benchmark.cc" />
+    <ClCompile Include="..\..\Dependencies\benchmark\src\benchmark_api_internal.cc" />
+    <ClCompile Include="..\..\Dependencies\benchmark\src\benchmark_name.cc" />
+    <ClCompile Include="..\..\Dependencies\benchmark\src\benchmark_register.cc" />
+    <ClCompile Include="..\..\Dependencies\benchmark\src\benchmark_runner.cc" />
+    <ClCompile Include="..\..\Dependencies\benchmark\src\check.cc" />
+    <ClCompile Include="..\..\Dependencies\benchmark\src\colorprint.cc" />
+    <ClCompile Include="..\..\Dependencies\benchmark\src\commandlineflags.cc" />
+    <ClCompile Include="..\..\Dependencies\benchmark\src\complexity.cc" />
+    <ClCompile Include="..\..\Dependencies\benchmark\src\console_reporter.cc" />
+    <ClCompile Include="..\..\Dependencies\benchmark\src\counter.cc" />
+    <ClCompile Include="..\..\Dependencies\benchmark\src\csv_reporter.cc" />
+    <ClCompile Include="..\..\Dependencies\benchmark\src\json_reporter.cc" />
+    <ClCompile Include="..\..\Dependencies\benchmark\src\perf_counters.cc" />
+    <ClCompile Include="..\..\Dependencies\benchmark\src\reporter.cc" />
+    <ClCompile Include="..\..\Dependencies\benchmark\src\statistics.cc" />
+    <ClCompile Include="..\..\Dependencies\benchmark\src\string_util.cc" />
+    <ClCompile Include="..\..\Dependencies\benchmark\src\sysinfo.cc" />
+    <ClCompile Include="..\..\Dependencies\benchmark\src\timers.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Dependencies\benchmark\AUTHORS" />
+    <None Include="..\..\Dependencies\benchmark\CONTRIBUTORS" />
+    <None Include="..\..\Dependencies\benchmark\LICENSE" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

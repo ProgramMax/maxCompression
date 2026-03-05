@@ -1,0 +1,187 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Dependencies">
+      <UniqueIdentifier>{e81dd075-8686-499a-b4cf-ea9d666c8a8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\benchmark">
+      <UniqueIdentifier>{2f124c07-f37c-460f-96b3-a1b387f97d38}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Code\NaiveHuffman.hpp" />
+    <ClInclude Include="..\..\Code\NaiveLZ77.hpp" />
+    <ClInclude Include="..\..\Dependencies\benchmark\include\benchmark\benchmark.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\include\benchmark\benchmark_api.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\include\benchmark\counter.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\include\benchmark\export.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\include\benchmark\macros.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\include\benchmark\managers.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\include\benchmark\registration.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\include\benchmark\reporter.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\include\benchmark\state.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\include\benchmark\statistics.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\include\benchmark\sysinfo.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\include\benchmark\types.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\include\benchmark\utils.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\src\arraysize.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\src\benchmark_api_internal.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\src\benchmark_register.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\src\benchmark_runner.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\src\check.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\src\colorprint.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\src\commandlineflags.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\src\complexity.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\src\counter.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\src\cycleclock.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\src\internal_macros.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\src\log.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\src\mutex.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\src\perf_counters.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\src\re.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\src\statistics.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\src\string_util.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\src\thread_manager.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\src\thread_timer.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Dependencies\benchmark\src\timers.h">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Code\PerformanceTestsEntryPoint.cpp" />
+    <ClCompile Include="..\..\Code\NaiveHuffman.cpp" />
+    <ClCompile Include="..\..\Code\NaiveLZ77.cpp" />
+    <ClCompile Include="..\..\Dependencies\benchmark\src\benchmark.cc">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Dependencies\benchmark\src\benchmark_api_internal.cc">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Dependencies\benchmark\src\benchmark_name.cc">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Dependencies\benchmark\src\benchmark_register.cc">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Dependencies\benchmark\src\benchmark_runner.cc">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Dependencies\benchmark\src\check.cc">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Dependencies\benchmark\src\colorprint.cc">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Dependencies\benchmark\src\commandlineflags.cc">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Dependencies\benchmark\src\complexity.cc">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Dependencies\benchmark\src\console_reporter.cc">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Dependencies\benchmark\src\counter.cc">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Dependencies\benchmark\src\csv_reporter.cc">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Dependencies\benchmark\src\json_reporter.cc">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Dependencies\benchmark\src\perf_counters.cc">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Dependencies\benchmark\src\reporter.cc">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Dependencies\benchmark\src\statistics.cc">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Dependencies\benchmark\src\string_util.cc">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Dependencies\benchmark\src\sysinfo.cc">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Dependencies\benchmark\src\timers.cc">
+      <Filter>Dependencies\benchmark</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Dependencies\benchmark\AUTHORS">
+      <Filter>Dependencies\benchmark</Filter>
+    </None>
+    <None Include="..\..\Dependencies\benchmark\CONTRIBUTORS">
+      <Filter>Dependencies\benchmark</Filter>
+    </None>
+    <None Include="..\..\Dependencies\benchmark\LICENSE">
+      <Filter>Dependencies\benchmark</Filter>
+    </None>
+  </ItemGroup>
+</Project>

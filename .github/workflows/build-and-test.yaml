@@ -1,0 +1,72 @@
+name: "Build and test"
+
+on:
+  push:
+    branches: [ "tip-of-tree" ]
+  pull_request:
+    branches: [ "tip-of-tree" ]
+
+permissions:
+  contents: read
+
+jobs:
+	# GitHub runners do not yet support the latest Visual Studio.
+	# For now, comment them out
+  #Windows:
+  #  strategy:
+  #    matrix:
+  #      platform: [Win32, x64]
+  #      configuration: [Debug, Release]
+  #      runner: [windows-2022] # TODO: Add windows-2019, which errors on Platform Toolset = 'v143' missing.
+  #  runs-on: ${{ matrix.runner }}
+
+  #  steps:
+  #  - name: Checkout
+  #    uses: actions/checkout@v3
+
+  #  - name: Add MSBuild to PATH
+  #    uses: microsoft/setup-msbuild@v1.0.2
+
+  #  - name: Build
+  #    working-directory: ${{env.GITHUB_WORKSPACE}}
+  #    run: msbuild /m /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} .\Projects\VisualStudio
+
+  #  - name: Test
+  #    run: ${{ github.workspace }}\Projects\VisualStudio\CorrectnessTests\${{ matrix.platform }}\${{ matrix.configuration }}\CorrectnessTests.exe
+
+  Linux:
+    strategy:
+      matrix:
+        platform: [X86-64] # TODO: Add X86, AArch32, and AArch64 platforms
+        compiler: [clang++, g++]
+        runner: [ubuntu-24.04]
+    runs-on: ${{ matrix.runner }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    #- name: Install Compilers
+    #  run: |
+    #       sudo apt update
+    #       sudo apt install g++-9 g++-10 llvm-10 clang-10
+
+    - name: Build
+      env:
+        CXX: ${{ matrix.compiler }}
+      working-directory: ${{ github.workspace }}/Projects/Make
+      run: make
+
+    - name: Test
+      run: ${{ github.workspace }}/Projects/Make/CorrectnessTests
+
+    # TODO: Should this use perf stat record?
+    # TODO: GitHub won't let us run perf stat on their machines. That is fine, really. We should host our own stable hardware.
+    # Disable until we are hosting our own.
+    #- name: Performance Test
+    #  run: perf stat ${{ github.workspace }}/Projects/Make/CorrectnessTests > perf_stats
+
+    #- name: Upload performance test artifact
+    #  uses: actions/upload-artifact@v3
+    #  with:
+    #    name: perf_stats

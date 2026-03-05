@@ -1,0 +1,23 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/.github/">
+    <File Path="../../.github/CODEOWNERS" />
+  </Folder>
+  <Folder Name="/.github/ISSUE_TEMPLATE/">
+    <File Path="../../.github/ISSUE_TEMPLATE/bug_report.md" />
+    <File Path="../../.github/ISSUE_TEMPLATE/feature_request.md" />
+  </Folder>
+  <Folder Name="/.github/workflows/">
+    <File Path="../../.github/workflows/build-and-test.yaml" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="../../AUTHORS" />
+    <File Path="../../LICENSE" />
+    <File Path="../Make/Makefile" />
+  </Folder>
+  <Project Path="CorrectnessTests.vcxproj" Id="4aa5d6a2-4477-451c-b97e-1e30fcacface" />
+  <Project Path="PerformanceTests.vcxproj" Id="80ac786e-afe7-4dc3-8972-3b1ef838c3be" />
+</Solution>
