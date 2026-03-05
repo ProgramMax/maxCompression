@@ -54,6 +54,7 @@ else
 endif
 
 CPPFLAGS += -std=c++23 -Werror -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion $(TARGET_BIT_FLAG)
+PERFORMANCE_TESTS_CPPFLAGS = $(CPPFLAGS) $(PERFORMANCE_TESTS_INCLUDE_PATHS_FLAGS)
 LINKER_FLAGS += $(LIBRARY_PATHS_FLAGS)
 
 
@@ -72,9 +73,8 @@ $(PERFORMANCE_TESTS_PROGRAM): $(PERFORMANCE_TESTS_CXX_OBJS)
 	$(CXX) $(TARGET_BIT_FLAG) -g $(PERFORMANCE_TESTS_CXX_OBJS) $(LINKER_FLAGS) -o PerformanceTests
 
 $(PERFORMANCE_TESTS_CXX_OBJS): $(PERFORMANCE_TESTS_CXX_SRCS)
-	CPPFLAGS += $(PERFORMANCE_TESTS_INCLUDDE_PATHS_FLAGS)
 	mkdir -p $(dir $@)
-	$(CXX) -g $(CPPFLAGS) -c $(patsubst Build/Objects/%.o,../../Code/%.cpp,$@) -o $@
+	$(CXX) -g $(PERFORMANCE_TESTS_CPPFLAGS) -c $(patsubst Build/Objects/%.o,../../Code/%.cpp,$@) -o $@
 
 .PHONY: clean
 distclean: clean

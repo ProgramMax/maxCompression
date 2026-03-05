@@ -19,7 +19,7 @@ namespace {
 
 	void CountOccurrences(benchmark::State& state) {
 		for (auto _ : state) {
-			auto occurrences = maxCompression::CountOccurrences(uncompressed_span);
+			maxCompression::CountOccurrences(uncompressed_span);
 		}
 	}
 	BENCHMARK(CountOccurrences);
@@ -28,7 +28,7 @@ namespace {
 		auto occurances = maxCompression::CountOccurrences(uncompressed_span);
 
 		for (auto _ : state) {
-			auto huffman_tree = maxCompression::CreateHuffmanTree(occurances);
+			maxCompression::CreateHuffmanTree(occurances);
 		}
 	}
 	BENCHMARK(CreateHuffmanTree);
@@ -38,7 +38,7 @@ namespace {
 		auto huffman_tree = maxCompression::CreateHuffmanTree(occurances);
 
 		for (auto _ : state) {
-			auto canonical_huffman_codes = maxCompression::GetCanonicalHuffmanCodes(huffman_tree.get());
+			maxCompression::GetCanonicalHuffmanCodes(huffman_tree.get());
 		}
 	}
 	BENCHMARK(GetCanonicalHuffmanCodes);
@@ -49,7 +49,7 @@ namespace {
 		auto canonical_huffman_codes = maxCompression::GetCanonicalHuffmanCodes(huffman_tree.get());
 
 		for (auto _ : state) {
-			auto symbol_encodings = maxCompression::ReconstituteSymbolEncodings(canonical_huffman_codes);
+			maxCompression::ReconstituteSymbolEncodings(canonical_huffman_codes);
 		}
 	}
 	BENCHMARK(ReconstituteSymbolEncodings);
@@ -61,7 +61,7 @@ namespace {
 		auto symbol_encodings = maxCompression::ReconstituteSymbolEncodings(canonical_huffman_codes);
 
 		for (auto _ : state) {
-			auto compressed_result = maxCompression::CompressHuffman(uncompressed_span, symbol_encodings);
+			maxCompression::CompressHuffman(uncompressed_span, symbol_encodings);
 		}
 	}
 	BENCHMARK(CompressHuffman);
@@ -74,7 +74,7 @@ namespace {
 		auto compressed_result = maxCompression::CompressHuffman(uncompressed_span, symbol_encodings);
 
 		for (auto _ : state) {
-			auto reconstituted_huffman_tree = maxCompression::ReconstituteHuffmanTree(symbol_encodings);
+			maxCompression::ReconstituteHuffmanTree(symbol_encodings);
 		}
 	}
 	BENCHMARK(ReconstituteHuffmanTree);
@@ -88,7 +88,7 @@ namespace {
 		auto reconstituted_huffman_tree = maxCompression::ReconstituteHuffmanTree(symbol_encodings);
 
 		for (auto _ : state) {
-			auto decompressed_buffer = maxCompression::DecompressHuffman(compressed_result, reconstituted_huffman_tree.get());
+			maxCompression::DecompressHuffman(compressed_result, reconstituted_huffman_tree.get());
 		}
 	}
 	BENCHMARK(DecompressHuffman);
