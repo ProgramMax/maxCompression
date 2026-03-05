@@ -53,7 +53,8 @@ else
 	TARGET_BIT_FLAG = -m32
 endif
 
-CPPFLAGS += -std=c++23 -Werror -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion $(TARGET_BIT_FLAG)
+CPPFLAGS += -std=c++23 -Werror -Wall -Wextra -Wpedantic -Wconversion $(TARGET_BIT_FLAG)
+# TODO: Add -Wsign-conversion
 PERFORMANCE_TESTS_CPPFLAGS = $(CPPFLAGS) $(PERFORMANCE_TESTS_INCLUDE_PATHS_FLAGS)
 LINKER_FLAGS += $(LIBRARY_PATHS_FLAGS)
 

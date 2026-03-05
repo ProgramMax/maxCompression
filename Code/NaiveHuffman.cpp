@@ -42,7 +42,7 @@ namespace maxCompression {
 			auto count = occurrences[i];
 
 			if (count != 0) {
-				nodes.emplace_back(std::make_unique<NaiveHuffmanNode>(count, static_cast<int>(i)));
+				nodes.push_back(std::make_unique<NaiveHuffmanNode>(count, static_cast<uint8_t>(i)));
 			}
 		}
 
