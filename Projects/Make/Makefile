@@ -65,8 +65,8 @@ PERFORMANCE_TESTS_CXX_SRCS = \
 	../../Dependencies/benchmark/src/sysinfo.cc \
 	../../Dependencies/benchmark/src/timers.cc
 PERFORMANCE_TESTS_CXX_OBJS = \
-	$(patsubst ../../Code/%.cpp,Build/Objects/%.o, \
-	$(patsubst ../../Dependencies/%.cc,Build/Objects/%.o,$(PERFORMANCE_TESTS_CXX_SRCS)))
+	$(patsubst ../../Code/%.cpp,Build/Objects/Code/%.o, \
+	$(patsubst ../../Dependencies/%.cc,Build/Objects/Dependencies/%.o,$(PERFORMANCE_TESTS_CXX_SRCS)))
 
 
 ifeq ($(IS_64_BIT), true)
@@ -97,7 +97,7 @@ $(PERFORMANCE_TESTS_PROGRAM): $(PERFORMANCE_TESTS_CXX_OBJS)
 
 $(PERFORMANCE_TESTS_CXX_OBJS): $(PERFORMANCE_TESTS_CXX_SRCS)
 	mkdir -p $(dir $@)
-	$(CXX) -g $(PERFORMANCE_TESTS_CPPFLAGS) -c $(patsubst Build/Objects/%.o,../../Code/%.cpp,$@) -o $@
+	$(CXX) -g $(PERFORMANCE_TESTS_CPPFLAGS) -c $(patsubst Build/Objects/Code/%.o,../../Code/%.cpp,$(patsubst Build/Objects/Dependencies/%.o,../../Dependencies/%.cc,$@)) -o $@
 
 .PHONY: clean
 distclean: clean
