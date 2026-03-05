@@ -26,9 +26,9 @@ endif
 CORRECTNESS_TESTS_PROGRAM = Build/CorrectnessTests
 
 CORRECTNESS_TESTS_CXX_SRCS = \
-	../../CorrectnessTestsEntryPoint.cpp \
-	../../NaiveHuffman.cpp \
-	../../NaiveLZ77.cpp
+	../../Code/CorrectnessTestsEntryPoint.cpp \
+	../../Code/NaiveHuffman.cpp \
+	../../Code/NaiveLZ77.cpp
 CORRECTNESS_TESTS_CXX_OBJS = $(patsubst ../../Code/%.cpp,Build/Objects/%.o,$(CORRECTNESS_TESTS_CXX_SRCS))
 
 
