@@ -38,11 +38,11 @@ namespace maxCompression {
 		// First, eliminate any non-zero count elements
 		std::vector<std::unique_ptr<NaiveHuffmanNode>> nodes;
 
-		for (auto i = int{0}; i < occurrences.size(); i++) {
+		for (auto i = size_t{0}; i < occurrences.size(); i++) {
 			auto count = occurrences[i];
 
 			if (count != 0) {
-				nodes.emplace_back(std::make_unique<NaiveHuffmanNode>(count, i));
+				nodes.push_back(std::make_unique<NaiveHuffmanNode>(count, static_cast<uint8_t>(i)));
 			}
 		}
 
@@ -214,7 +214,7 @@ namespace maxCompression {
 			auto bits_to_add = symbol_encoding.traversal_path_ << (bits_available - bits_to_consume);
 			auto remaining_bits = std::max(0, symbol_encoding.code_length_ - bits_to_consume);
 			bits_to_add >>= remaining_bits;
-			current_byte |= bits_to_add;
+			current_byte = static_cast<uint8_t>(current_byte | bits_to_add);
 			current_byte_length += bits_to_consume;
 
 			if (current_byte_length == 8) {

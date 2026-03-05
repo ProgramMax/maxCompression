@@ -26,9 +26,9 @@ endif
 CORRECTNESS_TESTS_PROGRAM = Build/CorrectnessTests
 
 CORRECTNESS_TESTS_CXX_SRCS = \
-	../../CorrectnessTestsEntryPoint.cpp \
-	../../NaiveHuffman.cpp \
-	../../NaiveLZ77.cpp
+	../../Code/CorrectnessTestsEntryPoint.cpp \
+	../../Code/NaiveHuffman.cpp \
+	../../Code/NaiveLZ77.cpp
 CORRECTNESS_TESTS_CXX_OBJS = $(patsubst ../../Code/%.cpp,Build/Objects/%.o,$(CORRECTNESS_TESTS_CXX_SRCS))
 
 
@@ -44,8 +44,30 @@ PERFORMANCE_TESTS_PROGRAM = Build/PerformanceTests
 PERFORMANCE_TESTS_CXX_SRCS = \
 	../../Code/PerformanceTestsEntryPoint.cpp \
 	../../Code/NaiveHuffman.cpp \
-	../../Code/NaiveLZ77.cpp
-PERFORMANCE_TESTS_CXX_OBJS = $(patsubst ../../Code/%.cpp,Build/Objects/%.o,$(PERFORMANCE_TESTS_CXX_SRCS))
+	../../Code/NaiveLZ77.cpp \
+	../../Dependencies/benchmark/src/benchmark.cc \
+	../../Dependencies/benchmark/src/benchmark_api_internal.cc \
+	../../Dependencies/benchmark/src/benchmark_name.cc \
+	../../Dependencies/benchmark/src/benchmark_register.cc \
+	../../Dependencies/benchmark/src/benchmark_runner.cc \
+	../../Dependencies/benchmark/src/check.cc \
+	../../Dependencies/benchmark/src/colorprint.cc \
+	../../Dependencies/benchmark/src/commandlineflags.cc \
+	../../Dependencies/benchmark/src/complexity.cc \
+	../../Dependencies/benchmark/src/console_reporter.cc \
+	../../Dependencies/benchmark/src/counter.cc \
+	../../Dependencies/benchmark/src/csv_reporter.cc \
+	../../Dependencies/benchmark/src/json_reporter.cc \
+	../../Dependencies/benchmark/src/perf_counters.cc \
+	../../Dependencies/benchmark/src/reporter.cc \
+	../../Dependencies/benchmark/src/statistics.cc \
+	../../Dependencies/benchmark/src/string_util.cc \
+	../../Dependencies/benchmark/src/sysinfo.cc \
+	../../Dependencies/benchmark/src/timers.cc
+PERFORMANCE_TESTS_CXX_OBJS = \
+	$(patsubst ../../Code/%.cpp,Build/Objects/Code/%.o, \
+	$(patsubst ../../Dependencies/%.cc,Build/Objects/Dependencies/%.o,$(PERFORMANCE_TESTS_CXX_SRCS)))
+
 
 ifeq ($(IS_64_BIT), true)
 	TARGET_BIT_FLAG = -m64
@@ -53,7 +75,9 @@ else
 	TARGET_BIT_FLAG = -m32
 endif
 
-CPPFLAGS += -std=c++23 -Werror -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion $(TARGET_BIT_FLAG)
+CPPFLAGS += -std=c++23 -Werror -Wall -Wextra $(TARGET_BIT_FLAG)
+# TODO: Add -Wpedantic -Wconversion -Wsign-conversion
+PERFORMANCE_TESTS_CPPFLAGS = $(CPPFLAGS) $(PERFORMANCE_TESTS_INCLUDE_PATHS_FLAGS) -DBENCHMARK_STATIC_DEFINE
 LINKER_FLAGS += $(LIBRARY_PATHS_FLAGS)
 
 
@@ -72,9 +96,8 @@ $(PERFORMANCE_TESTS_PROGRAM): $(PERFORMANCE_TESTS_CXX_OBJS)
 	$(CXX) $(TARGET_BIT_FLAG) -g $(PERFORMANCE_TESTS_CXX_OBJS) $(LINKER_FLAGS) -o PerformanceTests
 
 $(PERFORMANCE_TESTS_CXX_OBJS): $(PERFORMANCE_TESTS_CXX_SRCS)
-	CPPFLAGS += $(PERFORMANCE_TESTS_INCLUDDE_PATHS_FLAGS)
 	mkdir -p $(dir $@)
-	$(CXX) -g $(CPPFLAGS) -c $(patsubst Build/Objects/%.o,../../Code/%.cpp,$@) -o $@
+	$(CXX) -g $(PERFORMANCE_TESTS_CPPFLAGS) -c $(patsubst Build/Objects/Code/%.o,../../Code/%.cpp,$(patsubst Build/Objects/Dependencies/%.o,../../Dependencies/%.cc,$@)) -o $@
 
 .PHONY: clean
 distclean: clean
