@@ -44,7 +44,26 @@ PERFORMANCE_TESTS_PROGRAM = Build/PerformanceTests
 PERFORMANCE_TESTS_CXX_SRCS = \
 	../../Code/PerformanceTestsEntryPoint.cpp \
 	../../Code/NaiveHuffman.cpp \
-	../../Code/NaiveLZ77.cpp
+	../../Code/NaiveLZ77.cpp \
+	../../Dependencies/benchmark/src/benchmark.cc \
+	../../Dependencies/benchmark/src/benchmark_api_internal.cc \
+	../../Dependencies/benchmark/src/benchmark_name.cc \
+	../../Dependencies/benchmark/src/benchmark_register.cc \
+	../../Dependencies/benchmark/src/benchmark_runner.cc \
+	../../Dependencies/benchmark/src/check.cc \
+	../../Dependencies/benchmark/src/colorprint.cc \
+	../../Dependencies/benchmark/src/commandlineflags.cc \
+	../../Dependencies/benchmark/src/complexity.cc \
+	../../Dependencies/benchmark/src/console_reporter.cc \
+	../../Dependencies/benchmark/src/counter.cc \
+	../../Dependencies/benchmark/src/csv_reporter.cc \
+	../../Dependencies/benchmark/src/json_reporter.cc \
+	../../Dependencies/benchmark/src/perf_counters.cc \
+	../../Dependencies/benchmark/src/reporter.cc \
+	../../Dependencies/benchmark/src/statistics.cc \
+	../../Dependencies/benchmark/src/string_util.cc \
+	../../Dependencies/benchmark/src/sysinfo.cc \
+	../../Dependencies/benchmark/src/timers.cc
 PERFORMANCE_TESTS_CXX_OBJS = $(patsubst ../../Code/%.cpp,Build/Objects/%.o,$(PERFORMANCE_TESTS_CXX_SRCS))
 
 ifeq ($(IS_64_BIT), true)
