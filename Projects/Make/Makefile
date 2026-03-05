@@ -64,8 +64,8 @@ PERFORMANCE_TESTS_CXX_SRCS = \
 	../../Dependencies/benchmark/src/string_util.cc \
 	../../Dependencies/benchmark/src/sysinfo.cc \
 	../../Dependencies/benchmark/src/timers.cc
-PERFORMANCE_TESTS_CXX_OBJS = $(patsubst ../../Code/%.cpp,Build/Objects/%.o,$(PERFORMANCE_TESTS_CXX_SRCS))
-PERFORMANCE_TESTS_CXX_OBJS = $(patsubst ../../Dependencies/%.cpp,Build/Objects/%.o,$(PERFORMANCE_TESTS_CXX_OBJS))
+PERFORMANCE_TESTS_CXX_OBJS = $(patsubst ../../Code/%.cpp,Build/Objects/%.o,\
+	$(patsubst ../../Dependencies/%.cpp,Build/Objects/%.o,$(PERFORMANCE_TESTS_CXX_OBJS)))
 
 
 ifeq ($(IS_64_BIT), true)
