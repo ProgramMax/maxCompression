@@ -176,8 +176,12 @@ I do not like them, Sam-I-am.
 I do not like green eggs and ham.)"};
 		auto uncompressed_span = std::span<uint8_t>{(uint8_t*)(uncompressed_string.data()), uncompressed_string.length()};
 
-		auto segments = maxCompression::LempelZivCompress(uncompressed_span, 2048, 3);
+		auto segments = maxCompression::CompressLempelZiv(uncompressed_span, 2048, 3);
 		PrintSegments(segments);
+		std::cout << std::endl;
+
+		auto decompressed_buffer = maxCompression::DecompressLempelZiv(segments);
+		PrintDecompressedBuffer(decompressed_buffer);
 		std::cout << std::endl;
 	}
 

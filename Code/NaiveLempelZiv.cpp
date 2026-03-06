@@ -52,6 +52,9 @@ namespace {
 		return maxCompression::DistanceAndLength{static_cast<uint16_t>(std::move(longest_match_start)), std::move(longest_match_length)};
 	}
 
+	template<class... Ts>
+	struct overloads : Ts... { using Ts::operator()...; };
+
 } // anonymous namespace
 
 namespace maxCompression {
@@ -61,7 +64,7 @@ namespace maxCompression {
 		, length_(std::move(length))
 	{}
 
-	std::vector<Segment> LempelZivCompress(const std::span<uint8_t>& input_buffer, uint16_t sliding_window_size, uint8_t minimum_match_length) noexcept {
+	std::vector<Segment> CompressLempelZiv(const std::span<uint8_t>& input_buffer, uint16_t sliding_window_size, uint8_t minimum_match_length) noexcept {
 		auto compressed_buffer = std::vector<Segment>{};
 		auto last_match_end = size_t{0};
 		auto sliding_window_start = size_t{0};
@@ -97,6 +100,30 @@ namespace maxCompression {
 		}
 
 		return compressed_buffer;
+	}
+
+	std::vector<uint8_t> DecompressLempelZiv(const std::vector<Segment>& compressed_buffer) noexcept {
+		std::vector<uint8_t> decompressed_buffer;
+
+		const auto visitor = overloads
+		{
+			[&](std::span<uint8_t> span) noexcept {
+				for (auto element : span) {
+					decompressed_buffer.emplace_back(element);
+				}
+			},
+			[&](maxCompression::DistanceAndLength distance_and_length) noexcept {
+				for (auto i = size_t{0}; i < distance_and_length.length_; i++) {
+					decompressed_buffer.emplace_back(decompressed_buffer[i + distance_and_length.distance_]);
+				}
+			},
+		};
+
+		for (auto& segment : compressed_buffer) {
+			std::visit(visitor, segment);
+		}
+
+		return decompressed_buffer;
 	}
 
 } // namespace maxCompression

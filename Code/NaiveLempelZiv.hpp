@@ -26,7 +26,9 @@ namespace maxCompression {
 	// So expose the series of spans and references for the different forms to use in their own way.
 	using Segment = std::variant<std::span<uint8_t>, DistanceAndLength>;
 
-	std::vector<Segment> LempelZivCompress(const std::span<uint8_t>& input_buffer, uint16_t sliding_window_size, uint8_t minimum_match_length) noexcept;
+	std::vector<Segment> CompressLempelZiv(const std::span<uint8_t>& input_buffer, uint16_t sliding_window_size, uint8_t minimum_match_length) noexcept;
+
+	std::vector<uint8_t> DecompressLempelZiv(const std::vector<Segment>& compressed_buffer) noexcept;
 
 }
 
