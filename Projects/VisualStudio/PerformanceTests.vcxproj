@@ -156,7 +156,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Code\NaiveHuffman.hpp" />
-    <ClInclude Include="..\..\Code\NaiveLZ77.hpp" />
+    <ClInclude Include="..\..\Code\NaiveLempelZiv.hpp" />
     <ClInclude Include="..\..\Dependencies\benchmark\include\benchmark\benchmark.h" />
     <ClInclude Include="..\..\Dependencies\benchmark\include\benchmark\benchmark_api.h" />
     <ClInclude Include="..\..\Dependencies\benchmark\include\benchmark\counter.h" />
@@ -193,7 +193,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Code\NaiveHuffman.cpp" />
-    <ClCompile Include="..\..\Code\NaiveLZ77.cpp" />
+    <ClCompile Include="..\..\Code\NaiveLempelZiv.cpp" />
     <ClCompile Include="..\..\Code\PerformanceTestsEntryPoint.cpp" />
     <ClCompile Include="..\..\Dependencies\benchmark\src\benchmark.cc" />
     <ClCompile Include="..\..\Dependencies\benchmark\src\benchmark_api_internal.cc" />

@@ -10,7 +10,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Code\NaiveHuffman.hpp" />
-    <ClInclude Include="..\..\Code\NaiveLZ77.hpp" />
     <ClInclude Include="..\..\Dependencies\benchmark\include\benchmark\benchmark.h">
       <Filter>Dependencies\benchmark</Filter>
     </ClInclude>
@@ -110,11 +109,11 @@
     <ClInclude Include="..\..\Dependencies\benchmark\src\timers.h">
       <Filter>Dependencies\benchmark</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Code\NaiveLempelZiv.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Code\PerformanceTestsEntryPoint.cpp" />
     <ClCompile Include="..\..\Code\NaiveHuffman.cpp" />
-    <ClCompile Include="..\..\Code\NaiveLZ77.cpp" />
     <ClCompile Include="..\..\Dependencies\benchmark\src\benchmark.cc">
       <Filter>Dependencies\benchmark</Filter>
     </ClCompile>
@@ -172,6 +171,7 @@
     <ClCompile Include="..\..\Dependencies\benchmark\src\timers.cc">
       <Filter>Dependencies\benchmark</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Code\NaiveLempelZiv.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Dependencies\benchmark\AUTHORS">
