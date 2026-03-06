@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#include "NaiveLZ77.hpp"
+#include "NaiveLempelZiv.hpp"
 
 #include <utility>
 
@@ -61,7 +61,7 @@ namespace maxCompression {
 		, length_(std::move(length))
 	{}
 
-	std::vector<Segment> LZ77Compress(const std::span<uint8_t>& input_buffer, uint16_t sliding_window_size, uint8_t minimum_match_length) noexcept {
+	std::vector<Segment> LempelZivCompress(const std::span<uint8_t>& input_buffer, uint16_t sliding_window_size, uint8_t minimum_match_length) noexcept {
 		auto compressed_buffer = std::vector<Segment>{};
 		auto last_match_end = size_t{0};
 		auto sliding_window_start = size_t{0};

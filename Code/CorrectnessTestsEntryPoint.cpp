@@ -10,7 +10,7 @@
 #include <vector>
 
 #include "NaiveHuffman.hpp"
-#include "NaiveLZ77.hpp"
+#include "NaiveLempelZiv.hpp"
 
 namespace {
 
@@ -158,7 +158,7 @@ namespace {
 		}
 	}
 
-	void TestLZ77() noexcept {
+	void TestLempelZiv() noexcept {
 		//auto uncompressed_string = std::string_view{"Blah blah blah blah blah!"};
 		auto uncompressed_string = std::string_view{
 R"(I am Sam
@@ -176,7 +176,7 @@ I do not like them, Sam-I-am.
 I do not like green eggs and ham.)"};
 		auto uncompressed_span = std::span<uint8_t>{(uint8_t*)(uncompressed_string.data()), uncompressed_string.length()};
 
-		auto segments = maxCompression::LZ77Compress(uncompressed_span, 2048, 3);
+		auto segments = maxCompression::LempelZivCompress(uncompressed_span, 2048, 3);
 		PrintSegments(segments);
 		std::cout << std::endl;
 	}
@@ -185,7 +185,7 @@ I do not like green eggs and ham.)"};
 
 int main() noexcept {
 	TestHuffman();
-	TestLZ77();
+	TestLempelZiv();
 
 	return 0;
 }

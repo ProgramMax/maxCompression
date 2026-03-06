@@ -10,6 +10,7 @@
 #include <benchmark/state.h>
 
 #include "NaiveHuffman.hpp"
+#include "NaiveLempelZiv.hpp"
 
 namespace {
 

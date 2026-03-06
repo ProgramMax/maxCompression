@@ -21,11 +21,11 @@
   <ItemGroup>
     <ClCompile Include="..\..\Code\CorrectnessTestsEntryPoint.cpp" />
     <ClCompile Include="..\..\Code\NaiveHuffman.cpp" />
-    <ClCompile Include="..\..\Code\NaiveLZ77.cpp" />
+    <ClCompile Include="..\..\Code\NaiveLempelZiv.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Code\NaiveHuffman.hpp" />
-    <ClInclude Include="..\..\Code\NaiveLZ77.hpp" />
+    <ClInclude Include="..\..\Code\NaiveLempelZiv.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>

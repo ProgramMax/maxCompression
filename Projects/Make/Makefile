@@ -28,7 +28,7 @@ CORRECTNESS_TESTS_PROGRAM = Build/CorrectnessTests
 CORRECTNESS_TESTS_CXX_SRCS = \
 	../../Code/CorrectnessTestsEntryPoint.cpp \
 	../../Code/NaiveHuffman.cpp \
-	../../Code/NaiveLZ77.cpp
+	../../Code/NaiveLempelZiv.cpp
 CORRECTNESS_TESTS_CXX_OBJS = $(patsubst ../../Code/%.cpp,Build/Objects/%.o,$(CORRECTNESS_TESTS_CXX_SRCS))
 
 
@@ -44,7 +44,7 @@ PERFORMANCE_TESTS_PROGRAM = Build/PerformanceTests
 PERFORMANCE_TESTS_CXX_SRCS = \
 	../../Code/PerformanceTestsEntryPoint.cpp \
 	../../Code/NaiveHuffman.cpp \
-	../../Code/NaiveLZ77.cpp \
+	../../Code/NaiveLempelZiv.cpp \
 	../../Dependencies/benchmark/src/benchmark.cc \
 	../../Dependencies/benchmark/src/benchmark_api_internal.cc \
 	../../Dependencies/benchmark/src/benchmark_name.cc \
