@@ -94,6 +94,22 @@ namespace {
 	}
 	BENCHMARK(DecompressHuffman);
 
+	void CompressLempelZiv(benchmark::State& state) {
+		for (auto _ : state) {
+			maxCompression::CompressLempelZiv(uncompressed_span, 2048, 3);
+		}
+	}
+	BENCHMARK(CompressLempelZiv);
+
+	void DecompressLempelZiv(benchmark::State& state) {
+		auto compressed_result = maxCompression::CompressLempelZiv(uncompressed_span, 2048, 3);
+
+		for (auto _ : state) {
+			maxCompression::DecompressLempelZiv(compressed_result);
+		}
+	}
+	BENCHMARK(DecompressLempelZiv);
+
 } // anonymous namespace
 
 BENCHMARK_MAIN();
