@@ -2,14 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#include "NaiveHuffman.hpp"
-
 #include <cstdint>
 #include <iostream>
 #include <span>
 #include <string>
 #include <utility>
 #include <vector>
+
+#include "NaiveHuffman.hpp"
+#include "NaiveLZ77.hpp"
 
 namespace {
 
@@ -104,37 +105,66 @@ namespace {
 		}
 	}
 
+	void TestHuffman() noexcept {
+		auto uncompressed_string = std::string_view{"Hello world!"};
+		auto uncompressed_span = std::span<uint8_t>{(uint8_t*)(uncompressed_string.data()), uncompressed_string.length()};
+
+
+		auto occurrences = maxCompression::CountOccurrences(std::move(uncompressed_span));
+		auto huffman_tree = maxCompression::CreateHuffmanTree(occurrences);
+
+		PrintHuffmanTree(huffman_tree.get());
+		std::cout << std::endl;
+
+		auto canonical_huffman_codes = maxCompression::GetCanonicalHuffmanCodes(huffman_tree.get());
+		PrintCanonicalHuffmanCodes(canonical_huffman_codes);
+		std::cout << std::endl;
+
+		auto symbol_encodings = maxCompression::ReconstituteSymbolEncodings(canonical_huffman_codes);
+		PrintSymbolEncodings(symbol_encodings);
+		std::cout << std::endl;
+
+		auto compressed_result = maxCompression::CompressHuffman(uncompressed_span, symbol_encodings);
+		PrintCompressedBuffer(compressed_result);
+		std::cout << std::endl;
+
+		auto reconstituted_huffman_tree = maxCompression::ReconstituteHuffmanTree(symbol_encodings);
+		PrintHuffmanTree(reconstituted_huffman_tree.get());
+		std::cout << std::endl;
+
+		auto decompressed_buffer = maxCompression::DecompressHuffman(compressed_result, reconstituted_huffman_tree.get());
+		PrintDecompressedBuffer(decompressed_buffer);
+		std::cout << std::endl;
+	}
+
+	void TestLZ77() noexcept {
+		auto uncompressed_string = std::string_view{"Blah blah blah blah blah!"};
+		/*
+		auto uncompressed_string = std::string_view{
+R"(I am Sam
+
+Sam I am
+
+That Sam-I-am!
+That Sam-I-am!
+I do not like
+that Sam-I-am!
+
+Do you like green eggs and ham?
+
+I do not like them, Sam-I-am.
+I do not like green eggs and ham.)"};
+		*/
+		auto uncompressed_span = std::span<uint8_t>{(uint8_t*)(uncompressed_string.data()), uncompressed_string.length()};
+
+		auto compressed_result = maxCompression::LZ77Compress(uncompressed_span, 2048);
+	}
+
 } // anonymous namespace
 
 int main() noexcept {
-	auto uncompressed_string = std::string_view{"Hello world!"};
-	auto uncompressed_span = std::span<uint8_t>{(uint8_t*)(uncompressed_string.data()), uncompressed_string.length()};
-
-	auto occurrences = maxCompression::CountOccurrences(std::move(uncompressed_span));
-	auto huffman_tree = maxCompression::CreateHuffmanTree(occurrences);
-
-	PrintHuffmanTree(huffman_tree.get());
-	std::cout << std::endl;
-
-	auto canonical_huffman_codes = maxCompression::GetCanonicalHuffmanCodes(huffman_tree.get());
-	PrintCanonicalHuffmanCodes(canonical_huffman_codes);
-	std::cout << std::endl;
-
-	auto symbol_encodings = maxCompression::ReconstituteSymbolEncodings(canonical_huffman_codes);
-	PrintSymbolEncodings(symbol_encodings);
-	std::cout << std::endl;
-
-	auto compressed_result = maxCompression::CompressHuffman(uncompressed_span, symbol_encodings);
-	PrintCompressedBuffer(compressed_result);
-	std::cout << std::endl;
-
-	auto reconstituted_huffman_tree = maxCompression::ReconstituteHuffmanTree(symbol_encodings);
-	PrintHuffmanTree(reconstituted_huffman_tree.get());
-	std::cout << std::endl;
-
-	auto decompressed_buffer = maxCompression::DecompressHuffman(compressed_result, reconstituted_huffman_tree.get());
-	PrintDecompressedBuffer(decompressed_buffer);
-	std::cout << std::endl;
+	//TestHuffman();
+	TestLZ77();
 
 	return 0;
 }
