@@ -184,7 +184,7 @@ I do not like green eggs and ham.)"};
 } // anonymous namespace
 
 int main() noexcept {
-	//TestHuffman();
+	TestHuffman();
 	TestLZ77();
 
 	return 0;
