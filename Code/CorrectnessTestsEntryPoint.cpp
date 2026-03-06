@@ -137,9 +137,29 @@ namespace {
 		std::cout << std::endl;
 	}
 
+	template<class... Ts>
+	struct overloads : Ts... { using Ts::operator()...; };
+
+	void PrintSegments(const std::vector<maxCompression::Segment>& segments) noexcept {
+		const auto visitor = overloads
+		{
+			[](std::span<uint8_t> span) noexcept {
+				for (auto element : span) {
+					std::cout << element;
+				}
+			},
+			[](maxCompression::DistanceAndLength distance_and_length) noexcept {
+				std::cout << '(' << distance_and_length.distance_ << ", " << distance_and_length.length_ << ')';
+			},
+		};
+
+		for (auto& segment : segments) {
+			std::visit(visitor, segment);
+		}
+	}
+
 	void TestLZ77() noexcept {
-		auto uncompressed_string = std::string_view{"Blah blah blah blah blah!"};
-		/*
+		//auto uncompressed_string = std::string_view{"Blah blah blah blah blah!"};
 		auto uncompressed_string = std::string_view{
 R"(I am Sam
 
@@ -154,10 +174,11 @@ Do you like green eggs and ham?
 
 I do not like them, Sam-I-am.
 I do not like green eggs and ham.)"};
-		*/
 		auto uncompressed_span = std::span<uint8_t>{(uint8_t*)(uncompressed_string.data()), uncompressed_string.length()};
 
-		auto compressed_result = maxCompression::LZ77Compress(uncompressed_span, 2048);
+		auto segments = maxCompression::LZ77Compress(uncompressed_span, 2048, 3);
+		PrintSegments(segments);
+		std::cout << std::endl;
 	}
 
 } // anonymous namespace
