@@ -195,13 +195,13 @@ I do not like green eggs and ham.)"};
 		auto compress_buffer = std::array<uint8_t, 4 * 1024>{};
 
 		auto compression_state = z_stream{};
-		auto foo = deflateInit(&compression_state, /*level=*/9);
+		deflateInit(&compression_state, /*level=*/9);
 		compression_state.avail_in = uncompressed_string.length();
 		compression_state.avail_out = compress_buffer.size();
 		compression_state.next_in = uncompressed_span.data();
 		compression_state.next_out = compress_buffer.data();
 
-		auto bar = deflate(&compression_state, Z_FINISH);
+		deflate(&compression_state, Z_FINISH);
 
 		deflateEnd(&compression_state);
 
