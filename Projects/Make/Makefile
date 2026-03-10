@@ -74,7 +74,7 @@ CORRECTNESS_TESTS_SRCS = \
 	../../Code/CorrectnessTestsEntryPoint.cpp \
 	../../Code/NaiveHuffman.cpp \
 	../../Code/NaiveLempelZiv.cpp
-CORRECTNESS_TESTS_OBJS = $(patsubst ../../Code/%.cpp,Build/Objects/%.o,$(CORRECTNESS_TESTS_SRCS))
+CORRECTNESS_TESTS_OBJS = $(patsubst ../../Code/%.cpp,Build/Objects/Code/%.o,$(CORRECTNESS_TESTS_SRCS))
 
 
 
@@ -91,7 +91,7 @@ PERFORMANCE_TESTS_SRCS = \
 	../../Code/NaiveHuffman.cpp \
 	../../Code/NaiveLempelZiv.cpp
 PERFORMANCE_TESTS_OBJS = \
-	$(patsubst ../../Code/%.cpp,Build/Objects/Code/%.o,$(PERFORMANCE_TEST_OBJS))
+	$(patsubst ../../Code/%.cpp,Build/Objects/Code/%.o,$(PERFORMANCE_TEST_SRCS))
 
 
 ifeq ($(IS_64_BIT), true)
