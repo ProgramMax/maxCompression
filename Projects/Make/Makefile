@@ -118,13 +118,13 @@ $(PERFORMANCE_TESTS_CXX_OBJS): $(PERFORMANCE_TESTS_CXX_SRCS)
 	mkdir -p $(dir $@)
 	$(CXX) -g $(PERFORMANCE_TESTS_CPPFLAGS) -c $(patsubst Build/Objects/Code/%.o,../../Code/%.cpp,$(patsubst Build/Objects/Dependencies/%.o,../../Dependencies/%.cc,$@)) -o $@
 
-$(ZLIB_OBJS) : $(ZLIB_SRCS)
+$(ZLIB_OBJS): $(ZLIB_SRCS)
 	mkdir -p $(dir $@)
 	$(CXX) -g $(CPPFLAGS) -c $(patsubst Build/Objects/Dependencies/zlib/%.o,../../Dependencies/zlib/%.c,$@) -o $@
 
 .PHONY: clean
 distclean: clean
 clean:
-	for file in $(CORRECTNESS_TESTS_PROGRAM) $(CORRECTNESS_TESTS_CXX_OBJS) $(PERFORMANCE_TESTS_PROGRAM) $(PERFORMANCE_TESTS_CXX_OBJS) ; do \
+	for file in $(CORRECTNESS_TESTS_PROGRAM) $(CORRECTNESS_TESTS_CXX_OBJS) $(PERFORMANCE_TESTS_PROGRAM) $(PERFORMANCE_TESTS_CXX_OBJS) $(ZLIB_OBJS) ; do \
 		rm $${file} ; \
 	done
