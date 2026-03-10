@@ -127,7 +127,7 @@ $(PERFORMANCE_TESTS_OBJS): $(PERFORMANCE_TESTS_SRCS)
 
 $(GOOGLE_BENCHMARK_OBJS): $(GOOGLE_BENCHMARK_SRCS)
 	mkdir -p $(dir $@)
-	$(CXX) -g $(CPPFLAGS) -c $(patsubst Build/Objects/Dependencies/benchmark/%.o,../../Dependencies/benchmark/src/%.cc,$@) -o $@
+	$(CXX) -g $(GOOGLE_BENCHMARK_CPPFLAGS) -c $(patsubst Build/Objects/Dependencies/benchmark/%.o,../../Dependencies/benchmark/src/%.cc,$@) -o $@
 
 $(ZLIB_OBJS): $(ZLIB_SRCS)
 	mkdir -p $(dir $@)
