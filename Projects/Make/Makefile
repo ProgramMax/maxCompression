@@ -40,30 +40,7 @@ ZLIB_SRCS = \
 	../../Dependencies/zlib/zutil.c
 ZLIB_OBJS = $(patsubst ../../Dependencies/zlib/%.c,Build/Objects/Dependencies/zlib/%.o,$(ZLIB_SRCS))
 
-
-
-CORRECTNESS_TESTS_PROGRAM = Build/CorrectnessTests
-
-CORRECTNESS_TESTS_CXX_SRCS = \
-	../../Code/CorrectnessTestsEntryPoint.cpp \
-	../../Code/NaiveHuffman.cpp \
-	../../Code/NaiveLempelZiv.cpp
-CORRECTNESS_TESTS_CXX_OBJS = $(patsubst ../../Code/%.cpp,Build/Objects/%.o,$(CORRECTNESS_TESTS_CXX_SRCS))
-
-
-
-
-PERFORMANCE_TESTS_INCLUDE_PATHS = \
-	../../Dependencies/benchmark/include/
-PERFORMANCE_TESTS_INCLUDE_PATHS_FLAGS = $(foreach d, $(PERFORMANCE_TESTS_INCLUDE_PATHS), -I$d)
-
-
-PERFORMANCE_TESTS_PROGRAM = Build/PerformanceTests
-
-PERFORMANCE_TESTS_CXX_SRCS = \
-	../../Code/PerformanceTestsEntryPoint.cpp \
-	../../Code/NaiveHuffman.cpp \
-	../../Code/NaiveLempelZiv.cpp \
+GOOGLE_BENCHMARK_SRCS = \
 	../../Dependencies/benchmark/src/benchmark.cc \
 	../../Dependencies/benchmark/src/benchmark_api_internal.cc \
 	../../Dependencies/benchmark/src/benchmark_name.cc \
@@ -83,9 +60,34 @@ PERFORMANCE_TESTS_CXX_SRCS = \
 	../../Dependencies/benchmark/src/string_util.cc \
 	../../Dependencies/benchmark/src/sysinfo.cc \
 	../../Dependencies/benchmark/src/timers.cc
-PERFORMANCE_TESTS_CXX_OBJS = \
-	$(patsubst ../../Code/%.cpp,Build/Objects/Code/%.o, \
-	$(patsubst ../../Dependencies/%.cc,Build/Objects/Dependencies/%.o,$(PERFORMANCE_TESTS_CXX_SRCS)))
+GOOGLE_BENCHMARK_OBJS = \
+	$(patsubst ../../Dependencies/benchmark/src/%.cc,Build/Objects/Dependencies/benchmark/%.o,$(GOOGLE_BENCHMARK_SRCS)))
+
+
+CORRECTNESS_TESTS_PROGRAM = Build/CorrectnessTests
+
+CORRECTNESS_TESTS_SRCS = \
+	../../Code/CorrectnessTestsEntryPoint.cpp \
+	../../Code/NaiveHuffman.cpp \
+	../../Code/NaiveLempelZiv.cpp
+CORRECTNESS_TESTS_OBJS = $(patsubst ../../Code/%.cpp,Build/Objects/%.o,$(CORRECTNESS_TESTS_SRCS))
+
+
+
+
+PERFORMANCE_TESTS_INCLUDE_PATHS = \
+	../../Dependencies/benchmark/include/
+PERFORMANCE_TESTS_INCLUDE_PATHS_FLAGS = $(foreach d, $(PERFORMANCE_TESTS_INCLUDE_PATHS), -I$d)
+
+
+PERFORMANCE_TESTS_PROGRAM = Build/PerformanceTests
+
+PERFORMANCE_TESTS_SRCS = \
+	../../Code/PerformanceTestsEntryPoint.cpp \
+	../../Code/NaiveHuffman.cpp \
+	../../Code/NaiveLempelZiv.cpp
+PERFORMANCE_TESTS_OBJS = \
+	$(patsubst ../../Code/%.cpp,Build/Objects/Code/%.o,$(PERFORMANCE_TEST_OBJS))
 
 
 ifeq ($(IS_64_BIT), true)
@@ -111,12 +113,16 @@ $(CORRECTNESS_TESTS_CXX_OBJS): $(CORRECTNESS_TESTS_CXX_SRCS)
 	mkdir -p $(dir $@)
 	$(CXX) -g $(CPPFLAGS) -c $(patsubst Build/Objects/%.o,../../Code/%.cpp,$@) -o $@
 
-$(PERFORMANCE_TESTS_PROGRAM): $(PERFORMANCE_TESTS_CXX_OBJS) $(ZLIB_OBJS)
-	$(CXX) $(TARGET_BIT_FLAG) -g $(PERFORMANCE_TESTS_CXX_OBJS) $(ZLIB_OBJS) $(LINKER_FLAGS) -o PerformanceTests
+$(PERFORMANCE_TESTS_PROGRAM): $(PERFORMANCE_TESTS_CXX_OBJS) $(GOOGLE_BENCHMARK_OBJS) $(ZLIB_OBJS)
+	$(CXX) $(TARGET_BIT_FLAG) -g $(PERFORMANCE_TESTS_CXX_OBJS) $(GOOGLE_BENCHMARK_OBJS) $(ZLIB_OBJS) $(LINKER_FLAGS) -o PerformanceTests
 
 $(PERFORMANCE_TESTS_CXX_OBJS): $(PERFORMANCE_TESTS_CXX_SRCS)
 	mkdir -p $(dir $@)
 	$(CXX) -g $(PERFORMANCE_TESTS_CPPFLAGS) -c $(patsubst Build/Objects/Code/%.o,../../Code/%.cpp,$(patsubst Build/Objects/Dependencies/%.o,../../Dependencies/%.cc,$@)) -o $@
+
+$(GOOGLE_BENCHMARK_OBJS): $(GOOGLE_BENCHMARK_SRCS)
+	mkdir -p $(dir $@)
+	$(CXX) -g $(CPPFLAGS) -c $(patsubst Build/Objects/Dependencies/benchmark/%.o,../../Dependencies/benchmark/src/%.cc,$@) -o $@
 
 $(ZLIB_OBJS): $(ZLIB_SRCS)
 	mkdir -p $(dir $@)
@@ -125,6 +131,6 @@ $(ZLIB_OBJS): $(ZLIB_SRCS)
 .PHONY: clean
 distclean: clean
 clean:
-	for file in $(CORRECTNESS_TESTS_PROGRAM) $(CORRECTNESS_TESTS_CXX_OBJS) $(PERFORMANCE_TESTS_PROGRAM) $(PERFORMANCE_TESTS_CXX_OBJS) $(ZLIB_OBJS) ; do \
+	for file in $(CORRECTNESS_TESTS_PROGRAM) $(CORRECTNESS_TESTS_CXX_OBJS) $(PERFORMANCE_TESTS_PROGRAM) $(PERFORMANCE_TESTS_CXX_OBJS) $(GOOGLE_BENCHMARK_OBJS) $(ZLIB_OBJS) ; do \
 		rm $${file} ; \
 	done
