@@ -22,6 +22,25 @@ ifeq (1, $(32_BIT))
 endif
 
 
+ZLIB_SRCS = \
+	../../Dependencies/zlib/adler32.c \
+	../../Dependencies/zlib/compress.c \
+	../../Dependencies/zlib/crc32.c \
+	../../Dependencies/zlib/deflate.c \
+	../../Dependencies/zlib/gzclose.c \
+	../../Dependencies/zlib/gzlib.c \
+	../../Dependencies/zlib/gzread.c \
+	../../Dependencies/zlib/gzwrite.c \
+	../../Dependencies/zlib/infback.c \
+	../../Dependencies/zlib/inffast.c \
+	../../Dependencies/zlib/inflate.c \
+	../../Dependencies/zlib/inftrees.c \
+	../../Dependencies/zlib/trees.c \
+	../../Dependencies/zlib/uncompr.c \
+	../../Dependencies/zlib/zutil.c
+ZLIB_OBJS = $(patsubst ../../Dependencies/zlib/%.c,Build/Objects/Dependencies/zlib/%.o,$(ZLIB_SRCS))
+
+
 
 CORRECTNESS_TESTS_PROGRAM = Build/CorrectnessTests
 
@@ -85,19 +104,23 @@ LINKER_FLAGS += $(LIBRARY_PATHS_FLAGS)
 
 all: $(CORRECTNESS_TESTS_PROGRAM) $(PERFORMANCE_TESTS_PROGRAM)
 
-$(CORRECTNESS_TESTS_PROGRAM): $(CORRECTNESS_TESTS_CXX_OBJS)
-	$(CXX) $(TARGET_BIT_FLAG) -g $(CORRECTNESS_TESTS_CXX_OBJS) $(LINKER_FLAGS) -o CorrectnessTests
+$(CORRECTNESS_TESTS_PROGRAM): $(CORRECTNESS_TESTS_CXX_OBJS) $(ZLIB_OBJS)
+	$(CXX) $(TARGET_BIT_FLAG) -g $(CORRECTNESS_TESTS_CXX_OBJS) $(ZLIB_OBJS) $(LINKER_FLAGS) -o CorrectnessTests
 
 $(CORRECTNESS_TESTS_CXX_OBJS): $(CORRECTNESS_TESTS_CXX_SRCS)
 	mkdir -p $(dir $@)
 	$(CXX) -g $(CPPFLAGS) -c $(patsubst Build/Objects/%.o,../../Code/%.cpp,$@) -o $@
 
-$(PERFORMANCE_TESTS_PROGRAM): $(PERFORMANCE_TESTS_CXX_OBJS)
-	$(CXX) $(TARGET_BIT_FLAG) -g $(PERFORMANCE_TESTS_CXX_OBJS) $(LINKER_FLAGS) -o PerformanceTests
+$(PERFORMANCE_TESTS_PROGRAM): $(PERFORMANCE_TESTS_CXX_OBJS) $(ZLIB_OBJS)
+	$(CXX) $(TARGET_BIT_FLAG) -g $(PERFORMANCE_TESTS_CXX_OBJS) $(ZLIB_OBJS) $(LINKER_FLAGS) -o PerformanceTests
 
 $(PERFORMANCE_TESTS_CXX_OBJS): $(PERFORMANCE_TESTS_CXX_SRCS)
 	mkdir -p $(dir $@)
 	$(CXX) -g $(PERFORMANCE_TESTS_CPPFLAGS) -c $(patsubst Build/Objects/Code/%.o,../../Code/%.cpp,$(patsubst Build/Objects/Dependencies/%.o,../../Dependencies/%.cc,$@)) -o $@
+
+$(ZLIB_OBJS) : $(ZLIB_SRCS)
+	mkdir -p $(dir $@)
+	$(CXX) -g $(CPPFLAGS) -c $(patsubst Build/Objects/Dependencies/zlib/%.o,../../Dependencies/zlib/%.c,$@) -o $@
 
 .PHONY: clean
 distclean: clean
