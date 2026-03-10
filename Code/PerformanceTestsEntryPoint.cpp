@@ -2,12 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+#include <array>
 #include <cstdint>
 #include <span>
 #include <string_view>
 
 #include <benchmark/registration.h>
 #include <benchmark/state.h>
+#include <zlib.h>
 
 #include "NaiveHuffman.hpp"
 #include "NaiveLempelZiv.hpp"
@@ -109,6 +111,55 @@ namespace {
 		}
 	}
 	BENCHMARK(DecompressLempelZiv);
+
+	void CompressZlib(benchmark::State& state) {
+		auto compress_buffer = std::array<uint8_t, 4 * 1024>{};
+
+		for (auto _ : state) {
+			auto compression_state = z_stream{};
+			deflateInit(&compression_state, /*level=*/1);
+			compression_state.avail_in = uncompressed_span.size();
+			compression_state.avail_out = compress_buffer.size();
+			compression_state.next_in = uncompressed_span.data();
+			compression_state.next_out = compress_buffer.data();
+
+			deflate(&compression_state, Z_FINISH);
+
+			deflateEnd(&compression_state);
+		}
+	}
+	BENCHMARK(CompressZlib);
+
+	void DecompressZlib(benchmark::State& state) {
+		auto compress_buffer = std::array<uint8_t, 4 * 1024>{};
+
+		auto compression_state = z_stream{};
+		deflateInit(&compression_state, /*level=*/1);
+		compression_state.avail_in = uncompressed_span.size();
+		compression_state.avail_out = compress_buffer.size();
+		compression_state.next_in = uncompressed_span.data();
+		compression_state.next_out = compress_buffer.data();
+
+		deflate(&compression_state, Z_FINISH);
+
+		deflateEnd(&compression_state);
+
+		auto decompress_buffer = std::array<uint8_t, 4 * 1024>{};
+
+		for (auto _ : state) {
+			auto decompression_state = z_stream{};
+			inflateInit(&decompression_state);
+			decompression_state.avail_in = compression_state.total_out;
+			decompression_state.avail_out = decompress_buffer.size();
+			decompression_state.next_in = compress_buffer.data();
+			decompression_state.next_out = decompress_buffer.data();
+
+			inflate(&decompression_state, Z_SYNC_FLUSH);
+
+			inflateEnd(&decompression_state);
+		}
+	}
+	BENCHMARK(DecompressZlib);
 
 } // anonymous namespace
 

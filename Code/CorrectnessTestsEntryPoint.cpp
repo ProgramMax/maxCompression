@@ -9,6 +9,9 @@
 #include <utility>
 #include <vector>
 
+#include <zlib.h>
+
+#include "NaiveDeflate.hpp"
 #include "NaiveHuffman.hpp"
 #include "NaiveLempelZiv.hpp"
 
@@ -185,11 +188,36 @@ I do not like green eggs and ham.)"};
 		std::cout << std::endl;
 	}
 
+	void TestDeflate() noexcept {
+		auto uncompressed_string = std::string_view{"a"};
+		auto uncompressed_span = std::span<uint8_t>{(uint8_t*)(uncompressed_string.data()), uncompressed_string.length()};
+
+		auto compress_buffer = std::array<uint8_t, 4 * 1024>{};
+
+		auto compression_state = z_stream{};
+		auto foo = deflateInit(&compression_state, /*level=*/9);
+		compression_state.avail_in = uncompressed_string.length();
+		compression_state.avail_out = compress_buffer.size();
+		compression_state.next_in = uncompressed_span.data();
+		compression_state.next_out = compress_buffer.data();
+
+		auto bar = deflate(&compression_state, Z_FINISH);
+
+		deflateEnd(&compression_state);
+
+		//level 1   = {120,   1, 75, 4, 0, 0, 98, 0, 98}
+		//level 2-5 = {120,  94, 75, 4, 0, 0, 98, 0, 98}
+		//level 6   = {120, 156, 75, 4, 0, 0, 98, 0, 98}
+		//level 7-9 = {120, 218, 75, 4, 0, 0, 98, 0, 98}
+		// TODO: Implement Deflate & compare the bit stream to make sure it matches zlib
+	}
+
 } // anonymous namespace
 
 int main() noexcept {
 	TestHuffman();
 	TestLempelZiv();
+	TestDeflate();
 
 	return 0;
 }
