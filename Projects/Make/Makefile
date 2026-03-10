@@ -123,7 +123,7 @@ $(PERFORMANCE_TESTS_PROGRAM): $(PERFORMANCE_TESTS_OBJS) $(GOOGLE_BENCHMARK_OBJS)
 
 $(PERFORMANCE_TESTS_OBJS): $(PERFORMANCE_TESTS_SRCS)
 	mkdir -p $(dir $@)
-	$(CXX) -g $(PERFORMANCE_TESTS_CPPFLAGS) -c $(patsubst Build/Objects/Code/%.o,../../Code/%.cpp,$(patsubst Build/Objects/Dependencies/%.o,../../Dependencies/%.cc,$@)) -o $@
+	$(CXX) -g $(PERFORMANCE_TESTS_CPPFLAGS) -c $(patsubst Build/Objects/Code/%.o,../../Code/%.cpp,$@) -o $@
 
 $(GOOGLE_BENCHMARK_OBJS): $(GOOGLE_BENCHMARK_SRCS)
 	mkdir -p $(dir $@)
