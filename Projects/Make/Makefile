@@ -116,7 +116,7 @@ $(CORRECTNESS_TESTS_PROGRAM): $(CORRECTNESS_TESTS_OBJS) $(ZLIB_OBJS)
 
 $(CORRECTNESS_TESTS_OBJS): $(CORRECTNESS_TESTS_SRCS)
 	mkdir -p $(dir $@)
-	$(CXX) -g $(CPPFLAGS) -c $(patsubst Build/Objects/%.o,../../Code/%.cpp,$@) -o $@
+	$(CXX) -g $(CPPFLAGS) -c $(patsubst Build/Objects/Code/%.o,../../Code/%.cpp,$@) -o $@
 
 $(PERFORMANCE_TESTS_PROGRAM): $(PERFORMANCE_TESTS_OBJS) $(GOOGLE_BENCHMARK_OBJS) $(ZLIB_OBJS)
 	$(CXX) $(TARGET_BIT_FLAG) -g $(PERFORMANCE_TESTS_OBJS) $(GOOGLE_BENCHMARK_OBJS) $(ZLIB_OBJS) $(LINKER_FLAGS) -o PerformanceTests
