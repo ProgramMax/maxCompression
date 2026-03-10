@@ -120,7 +120,7 @@ $(PERFORMANCE_TESTS_CXX_OBJS): $(PERFORMANCE_TESTS_CXX_SRCS)
 
 $(ZLIB_OBJS): $(ZLIB_SRCS)
 	mkdir -p $(dir $@)
-	$(CXX) -g $(CPPFLAGS) -c $(patsubst Build/Objects/Dependencies/zlib/%.o,../../Dependencies/zlib/%.c,$@) -o $@
+	$(CC) -g -c $(patsubst Build/Objects/Dependencies/zlib/%.o,../../Dependencies/zlib/%.c,$@) -o $@
 
 .PHONY: clean
 distclean: clean
