@@ -65,7 +65,7 @@ GOOGLE_BENCHMARK_SRCS = \
 	../../Dependencies/benchmark/src/sysinfo.cc \
 	../../Dependencies/benchmark/src/timers.cc
 GOOGLE_BENCHMARK_OBJS = \
-	$(patsubst ../../Dependencies/benchmark/src/%.cc,Build/Objects/Dependencies/benchmark/%.o,$(GOOGLE_BENCHMARK_SRCS)))
+	$(patsubst ../../Dependencies/benchmark/src/%.cc,Build/Objects/Dependencies/benchmark/%.o,$(GOOGLE_BENCHMARK_SRCS))
 
 
 CORRECTNESS_TESTS_PROGRAM = Build/CorrectnessTests
