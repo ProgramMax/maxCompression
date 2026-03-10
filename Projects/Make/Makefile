@@ -40,6 +40,10 @@ ZLIB_SRCS = \
 	../../Dependencies/zlib/zutil.c
 ZLIB_OBJS = $(patsubst ../../Dependencies/zlib/%.c,Build/Objects/Dependencies/zlib/%.o,$(ZLIB_SRCS))
 
+GOOGLE_BENCHMARK_INCLUDE_PATHS = \
+	../../Dependencies/benchmark/include/
+GOOGLE_BENCHMARK_INCLUDE_PATHS_FLAGS = $(foreach d, $(GOOGLE_BENCHMARK_INCLUDE_PATHS), -I$d)
+
 GOOGLE_BENCHMARK_SRCS = \
 	../../Dependencies/benchmark/src/benchmark.cc \
 	../../Dependencies/benchmark/src/benchmark_api_internal.cc \
@@ -98,6 +102,7 @@ endif
 
 CPPFLAGS += -std=c++23 -Werror -Wall -Wextra $(TARGET_BIT_FLAG)
 # TODO: Add -Wpedantic -Wconversion -Wsign-conversion
+GOOGLE_BENCHMARK_CPPFLAGS = $(CPPFLAGS) $(GOOGLE_BENCHMARK_INCLUDE_PATHS_FLAGS) -DBENCHMARK_STATIC_DEFINE
 PERFORMANCE_TESTS_CPPFLAGS = $(CPPFLAGS) $(PERFORMANCE_TESTS_INCLUDE_PATHS_FLAGS) -DBENCHMARK_STATIC_DEFINE
 LINKER_FLAGS += $(LIBRARY_PATHS_FLAGS)
 
