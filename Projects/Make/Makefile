@@ -91,7 +91,7 @@ PERFORMANCE_TESTS_SRCS = \
 	../../Code/NaiveHuffman.cpp \
 	../../Code/NaiveLempelZiv.cpp
 PERFORMANCE_TESTS_OBJS = \
-	$(patsubst ../../Code/%.cpp,Build/Objects/Code/%.o,$(PERFORMANCE_TEST_SRCS))
+	$(patsubst ../../Code/%.cpp,Build/Objects/Code/%.o,$(PERFORMANCE_TESTS_SRCS))
 
 
 ifeq ($(IS_64_BIT), true)
