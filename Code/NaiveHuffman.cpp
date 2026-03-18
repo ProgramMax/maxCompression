@@ -285,7 +285,7 @@ namespace maxCompression {
 		const NaiveHuffmanNode* current_node = root;
 
 		auto buffer_size = compressed_buffer.size();
-		for (size_t i = 0; i < buffer_size; i++) {
+		for (auto i = size_t{0}; i < buffer_size; i++) {
 			auto& compressed_byte = compressed_buffer[i];
 			auto byte_shift = 7;
 
@@ -302,6 +302,111 @@ namespace maxCompression {
 					current_node = root;
 				}
 				byte_shift--;
+			}
+		}
+
+		return decompressed_buffer;
+	}
+
+	std::vector<uint8_t> DecompressHuffman(const CompressResult& compress_result, const CanonicalHuffmanCode& canonical_huffman_codes) noexcept {
+		struct TreeLayer {
+			uint32_t first_code_word_;
+			std::vector<uint8_t> symbols_; // The nth element will have the code word first_code_word_ + n.
+			// This is the advantage of canonical Huffman codes.
+		};
+
+		// First, create a list of symbols at each tree layer.
+		// The outer index is the tree layer. It also acts as the length of the code word (n+1).
+		// The inner index is the n-th symbol at that layer.
+		auto symbol_tree_layers = std::vector<TreeLayer>{};
+
+
+
+
+
+
+		auto symbol_index = size_t{0};
+		auto working_symbol_encoding = SymbolEncoding{}; 
+
+		auto code_length_size = canonical_huffman_codes.code_lengths_.size();
+		for (auto i = size_t{0}; i < code_length_size; i++) {
+			// At each new code length size, first shift the working encoding left
+			working_symbol_encoding.code_length_++;
+			working_symbol_encoding.traversal_path_ <<= 1;
+
+			// Create an entry for this layer
+			symbol_tree_layers.emplace_back(working_symbol_encoding.traversal_path_, std::vector<uint8_t>{});
+
+			auto symbols_at_this_code_length = canonical_huffman_codes.code_lengths_[i];
+			for (auto j = size_t{0}; j < symbols_at_this_code_length; j++) {
+				auto current_symbol = canonical_huffman_codes.symbols_[symbol_index++];
+				symbol_tree_layers[working_symbol_encoding.code_length_ - 1].symbols_.emplace_back(current_symbol);
+				working_symbol_encoding.traversal_path_++;
+			}
+		}
+
+
+
+
+
+
+
+		auto decompressed_buffer = std::vector<uint8_t>{};
+
+		auto& compressed_buffer = compress_result.compressed_buffer_;
+		auto buffer_size = compressed_buffer.size();
+
+		auto current_byte = size_t{0};
+		//auto current_bit_offset = uint8_t{0};
+		auto bits_left_in_next_byte = uint8_t{8};
+
+		auto decompressed_byte = compressed_buffer[0];
+
+		for ( ; current_byte < buffer_size; ) {
+			// Find the length of this code word
+			auto tree_layer_first_code_word = uint32_t{};
+			auto code_length = size_t{0};
+			for ( ; code_length < symbol_tree_layers.size(); code_length++) {
+				tree_layer_first_code_word = symbol_tree_layers[code_length].first_code_word_;
+				auto code = static_cast<uint32_t>(decompressed_byte >> (8 - code_length - 1));
+				if (code < tree_layer_first_code_word) {
+					// This is the layer of the tree
+					break;
+				}
+			}
+
+			// TODO: This name shadows the previous name
+			auto symbol_index = (decompressed_byte >> (8 - code_length)) - tree_layer_first_code_word;
+			decompressed_buffer.emplace_back(symbol_tree_layers[code_length - 1].symbols_[symbol_index]);
+
+			// Prepare the next code to be read
+			decompressed_byte <<= code_length;
+			if (current_byte != buffer_size - 1) {
+				auto next_byte_mask = 0xff >> code_length;
+				auto next_byte = compressed_buffer[current_byte + 1];
+				next_byte >>= 8 - code_length;
+				next_byte &= next_byte_mask;
+				decompressed_byte |= next_byte;
+
+				bits_left_in_next_byte -= code_length;
+
+				// If we need more than just the next byte...
+				if (code_length > bits_left_in_next_byte) {
+					// ...start by consuming all the bits of the next byte...
+					auto next_byte_mask = 0xff >> bits_left_in_next_byte;
+					auto next_byte = compressed_buffer[current_byte + 1];
+					next_byte >>= 8 - bits_left_in_next_byte;
+					next_byte &= next_byte_mask;
+
+					decompressed_byte |= next_byte;
+
+					// ...and prepare to read from the following byte.
+					code_length -= bits_left_in_next_byte;
+					bits_left_in_next_byte = 8;
+					current_byte++;
+				}
+
+				code_length = 0;
 			}
 		}
 
