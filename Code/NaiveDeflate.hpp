@@ -12,7 +12,16 @@
 #ifndef MAXCOMPRESSION_NAIVEDEFLATE_HPP
 #define MAXCOMPRESSION_NAIVEDEFLATE_HPP
 
+// Deflate is defined in RFC 1951: https://www.rfc-editor.org/rfc/rfc1951
+
+#include <cstdint>
+#include <span>
+#include <vector>
+
 namespace maxCompression {
+
+	std::vector<uint8_t> NaiveDeflateCompress(const std::span<uint8_t>& uncompressed_buffer) noexcept;
+	std::vector<uint8_t> NaiveDeflateDecompress(const std::span<uint8_t>& compressed_buffer) noexcept;
 
 } // namespace maxCompression
 

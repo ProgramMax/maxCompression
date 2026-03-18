@@ -52,6 +52,11 @@ namespace maxCompression {
 	// It stores a list of how many nodes share the same bit length
 	// and the symbols in order of ascending bit length (subsorted by ascending symbol value).
 	// This ends up changing the shape of the tree but preserves its important properties.
+	// Additionally, it allows decoding without *really* rebuilding the tree.
+	// We can look at say 6 bits in the bitstream. If their value is less than
+	// the first entry of the 6-bit codes, it must be a 7-bit or longer code.
+	// This operation can be done in a SIMD way, as well:
+	// One lane tries 4-bit, one tries 5-bit, etc. The first match tells us the bit length to consider.
 	struct CanonicalHuffmanCode {
 
 		explicit CanonicalHuffmanCode(std::vector<uint8_t> code_lengths, std::vector<uint8_t> symbols) noexcept;
@@ -90,6 +95,8 @@ namespace maxCompression {
 
 
 	std::vector<uint8_t> DecompressHuffman(const CompressResult& compress_result, const NaiveHuffmanNode* root) noexcept;
+
+	std::vector<uint8_t> DecompressHuffman(const CompressResult& compress_result, const CanonicalHuffmanCode& canonical_huffman_codes) noexcept;
 
 
 }; // namespace maxCompression

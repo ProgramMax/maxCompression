@@ -19,10 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Code\BitReader.cpp" />
     <ClCompile Include="..\..\Code\CorrectnessTestsEntryPoint.cpp" />
     <ClCompile Include="..\..\Code\NaiveDeflate.cpp" />
     <ClCompile Include="..\..\Code\NaiveHuffman.cpp" />
     <ClCompile Include="..\..\Code\NaiveLempelZiv.cpp" />
+    <ClCompile Include="..\..\Code\NaiveZlib.cpp" />
     <ClCompile Include="..\..\Dependencies\zlib\adler32.c" />
     <ClCompile Include="..\..\Dependencies\zlib\compress.c" />
     <ClCompile Include="..\..\Dependencies\zlib\crc32.c" />
@@ -40,9 +42,11 @@
     <ClCompile Include="..\..\Dependencies\zlib\zutil.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Code\BitReader.hpp" />
     <ClInclude Include="..\..\Code\NaiveDeflate.hpp" />
     <ClInclude Include="..\..\Code\NaiveHuffman.hpp" />
     <ClInclude Include="..\..\Code\NaiveLempelZiv.hpp" />
+    <ClInclude Include="..\..\Code\NaiveZlib.hpp" />
     <ClInclude Include="..\..\Dependencies\zlib\crc32.h" />
     <ClInclude Include="..\..\Dependencies\zlib\deflate.h" />
     <ClInclude Include="..\..\Dependencies\zlib\gzguts.h" />

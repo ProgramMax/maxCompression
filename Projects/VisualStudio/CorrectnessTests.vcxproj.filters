@@ -2,7 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="..\..\Code\CorrectnessTestsEntryPoint.cpp" />
-    <ClCompile Include="..\..\Code\NaiveDeflate.cpp" />
     <ClCompile Include="..\..\Code\NaiveHuffman.cpp" />
     <ClCompile Include="..\..\Code\NaiveLempelZiv.cpp" />
     <ClCompile Include="..\..\Dependencies\zlib\adler32.c">
@@ -50,9 +49,11 @@
     <ClCompile Include="..\..\Dependencies\zlib\zutil.c">
       <Filter>Dependencies\zlib</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Code\NaiveDeflate.cpp" />
+    <ClCompile Include="..\..\Code\NaiveZlib.cpp" />
+    <ClCompile Include="..\..\Code\BitReader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Code\NaiveDeflate.hpp" />
     <ClInclude Include="..\..\Code\NaiveHuffman.hpp" />
     <ClInclude Include="..\..\Code\NaiveLempelZiv.hpp" />
     <ClInclude Include="..\..\Dependencies\zlib\crc32.h">
@@ -88,6 +89,9 @@
     <ClInclude Include="..\..\Dependencies\zlib\zutil.h">
       <Filter>Dependencies\zlib</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Code\NaiveDeflate.hpp" />
+    <ClInclude Include="..\..\Code\NaiveZlib.hpp" />
+    <ClInclude Include="..\..\Code\BitReader.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Dependencies">

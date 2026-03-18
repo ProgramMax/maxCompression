@@ -14,6 +14,7 @@
 #include "NaiveDeflate.hpp"
 #include "NaiveHuffman.hpp"
 #include "NaiveLempelZiv.hpp"
+#include "NaiveZlib.hpp"
 
 namespace {
 
@@ -73,7 +74,7 @@ namespace {
 
 			std::cout << static_cast<char>(i) << ": ";
 			for (auto j = size_t{0}; j < symbol_encoding.code_length_; j++) {
-				std::cout << (symbol_encoding.traversal_path_ >> (8 - symbol_encoding.code_length_ + j) & 1);
+				std::cout << (symbol_encoding.traversal_path_ >> (symbol_encoding.code_length_ - j - 1) & 1);
 			}
 			std::cout << '\n';
 		}
@@ -138,6 +139,10 @@ namespace {
 		auto decompressed_buffer = maxCompression::DecompressHuffman(compressed_result, reconstituted_huffman_tree.get());
 		PrintDecompressedBuffer(decompressed_buffer);
 		std::cout << std::endl;
+
+		//auto decompressed_buffer_2 = maxCompression::DecompressHuffman(compressed_result, canonical_huffman_codes);
+		//PrintDecompressedBuffer(decompressed_buffer_2);
+		//std::cout << std::endl;
 	}
 
 	template<class... Ts>
@@ -163,6 +168,8 @@ namespace {
 
 	void TestLempelZiv() noexcept {
 		//auto uncompressed_string = std::string_view{"Blah blah blah blah blah!"};
+		//auto uncompressed_string = std::string_view{"abracadabra"};
+		// should produce "abracad", <len 4, dist 7>, (EndOfBlock if used inside Deflate)
 		auto uncompressed_string = std::string_view{
 R"(I am Sam
 
@@ -189,27 +196,35 @@ I do not like green eggs and ham.)"};
 	}
 
 	void TestDeflate() noexcept {
-		auto uncompressed_string = std::string_view{"a"};
+		//auto uncompressed_string = std::string_view{"a"};
+		auto uncompressed_string = std::string_view{"Hello world!"};
+		//auto uncompressed_string = std::string_view{"abracadabra"};
 		auto uncompressed_span = std::span<uint8_t>{(uint8_t*)(uncompressed_string.data()), uncompressed_string.length()};
 
-		auto compress_buffer = std::array<uint8_t, 4 * 1024>{};
+		auto compressed_buffer = std::array<uint8_t, 4 * 1024>{};
 
 		auto compression_state = z_stream{};
 		deflateInit(&compression_state, /*level=*/9);
 		compression_state.avail_in = uncompressed_string.length();
-		compression_state.avail_out = compress_buffer.size();
+		compression_state.avail_out = compressed_buffer.size();
 		compression_state.next_in = uncompressed_span.data();
-		compression_state.next_out = compress_buffer.data();
+		compression_state.next_out = compressed_buffer.data();
 
 		deflate(&compression_state, Z_FINISH);
 
 		deflateEnd(&compression_state);
 
+		// "a"
 		//level 1   = {120,   1, 75, 4, 0, 0, 98, 0, 98}
 		//level 2-5 = {120,  94, 75, 4, 0, 0, 98, 0, 98}
 		//level 6   = {120, 156, 75, 4, 0, 0, 98, 0, 98}
 		//level 7-9 = {120, 218, 75, 4, 0, 0, 98, 0, 98}
+
+		// "Hello world!"
+		//level 9 = {120, 218, 243, 72, 205, 201, 201, 87, 40, 207, 47, 202, 73, 81, 4, 0, 29, 9, 4, 94}
+
 		// TODO: Implement Deflate & compare the bit stream to make sure it matches zlib
+		auto foo = maxCompression::DecompressZlib(compressed_buffer);
 	}
 
 } // anonymous namespace
