@@ -345,7 +345,7 @@ namespace {
 
 namespace maxCompression {
 
-	std::vector<uint8_t> NaiveDeflateCompress(const std::span<uint8_t>& uncompressed_buffer) noexcept {
+	std::vector<uint8_t> NaiveDeflateCompress(const std::span<uint8_t>& /*uncompressed_buffer*/) noexcept {
 		// Deflate uses 2 Huffman trees: One for literals & Lempel-Ziv lengths, the other for Lempel-Ziv distances.
 		// In the literal & length tree, we store the symbols 0-255, a 256 EndOfBlock, and 257-285 lengths.
 		// In the distance tree we store 0-29 distance codes.
