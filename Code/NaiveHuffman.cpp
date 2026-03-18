@@ -357,7 +357,7 @@ namespace maxCompression {
 		auto buffer_size = compressed_buffer.size();
 
 		auto current_byte = size_t{0};
-		auto current_bit_offset = uint8_t{0};
+		//auto current_bit_offset = uint8_t{0};
 		auto bits_left_in_next_byte = uint8_t{8};
 
 		auto decompressed_byte = compressed_buffer[0];
@@ -368,7 +368,7 @@ namespace maxCompression {
 			auto code_length = size_t{0};
 			for ( ; code_length < symbol_tree_layers.size(); code_length++) {
 				tree_layer_first_code_word = symbol_tree_layers[code_length].first_code_word_;
-				auto code = decompressed_byte >> (8 - code_length - 1);
+				auto code = static_cast<uint32_t>(decompressed_byte >> (8 - code_length - 1));
 				if (code < tree_layer_first_code_word) {
 					// This is the layer of the tree
 					break;
