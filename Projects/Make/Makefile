@@ -40,22 +40,6 @@ ZLIB_SRCS = \
 	../../Dependencies/zlib/zutil.c
 ZLIB_OBJS = $(patsubst ../../Dependencies/zlib/%.c,Build/Objects/Dependencies/zlib/%.o,$(ZLIB_SRCS))
 
-
-
-CORRECTNESS_TESTS_PROGRAM = Build/CorrectnessTests
-
-CORRECTNESS_TESTS_CXX_SRCS = \
-	../../Code/BitReader.cpp \
-	../../Code/CorrectnessTestsEntryPoint.cpp \
-	../../Code/NaiveDeflate.cpp \
-	../../Code/NaiveHuffman.cpp \
-	../../Code/NaiveLempelZiv.cpp \
-	../../Code/NaiveZlib.cpp
-CORRECTNESS_TESTS_CXX_OBJS = $(patsubst ../../Code/%.cpp,Build/Objects/%.o,$(CORRECTNESS_TESTS_CXX_SRCS))
-
-
-
-
 GOOGLE_BENCHMARK_INCLUDE_PATHS = \
 	../../Dependencies/benchmark/include/
 GOOGLE_BENCHMARK_INCLUDE_PATHS_FLAGS = $(foreach d, $(GOOGLE_BENCHMARK_INCLUDE_PATHS), -I$d)
@@ -87,11 +71,13 @@ GOOGLE_BENCHMARK_OBJS = \
 CORRECTNESS_TESTS_PROGRAM = Build/CorrectnessTests
 
 CORRECTNESS_TESTS_SRCS = \
+	../../Code/BitReader.cpp \
 	../../Code/CorrectnessTestsEntryPoint.cpp \
+	../../Code/NaiveDeflate.cpp \
 	../../Code/NaiveHuffman.cpp \
-	../../Code/NaiveLempelZiv.cpp
-CORRECTNESS_TESTS_OBJS = $(patsubst ../../Code/%.cpp,Build/Objects/Code/%.o,$(CORRECTNESS_TESTS_SRCS))
-
+	../../Code/NaiveLempelZiv.cpp \
+	../../Code/NaiveZlib.cpp
+CORRECTNESS_TESTS_OBJS = $(patsubst ../../Code/%.cpp,Build/Objects/%.o,$(CORRECTNESS_TESTS_SRCS))
 
 
 
