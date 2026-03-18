@@ -25,7 +25,7 @@ namespace {
 				auto bit = bit_reader.ReadBit();
 				huffman_code = (huffman_code << 1) | bit;
 
-				if (code_length == 7 && huffman_code >= 0b000'0000 && huffman_code <= 0b001'0111) {
+				if (code_length == 7 && huffman_code <= 0b001'0111) {
 					literal_value = 256 + huffman_code;
 					break;
 				} else if (code_length == 8) {
@@ -167,7 +167,7 @@ namespace {
 						break;
 				}
 
-				auto length = base_length + extra_bits;
+				auto length = static_cast<uint16_t>(base_length + extra_bits);
 
 
 				// In fixed Huffman codes, all distance codes are 5-bit length
@@ -177,7 +177,7 @@ namespace {
 					literal_value = (literal_value << 1) | bit;
 				}
 
-				auto base_distance = uint8_t{0};
+				auto base_distance = uint16_t{0};
 				switch (literal_value) {
 					case 0:
 						base_distance = 1;
@@ -330,7 +330,7 @@ namespace {
 				}
 
 
-				auto distance = base_distance + extra_bits;
+				auto distance = static_cast<uint16_t>(base_distance + extra_bits);
 
 				for (auto i = size_t{0}; i < length; i++) {
 					returning.emplace_back(returning[returning.size() - distance]);
@@ -469,27 +469,16 @@ namespace maxCompression {
 	}
 
 	std::vector<uint8_t> NaiveDeflateDecompress(const std::span<uint8_t>& compressed_buffer) noexcept {
-		auto is_last_block = static_cast<bool>(compressed_buffer[0] & 1);
+		//auto is_last_block = static_cast<bool>(compressed_buffer[0] & 1);
 
-		enum class BlockType {
-			Uncompressed,
-			FixedHuffmanCodes,
-			DynamicHuffmanCodes,
-			Unknown,
-		};
-		auto block_type = BlockType::Unknown;
 		switch ((compressed_buffer[0] >> 1) & 0b11) {
 			case 0b00: // uncompressed
-				block_type = BlockType::Uncompressed;
 				break;
 			case 0b01: // compressed with fixed Huffman codes
-				block_type = BlockType::FixedHuffmanCodes;
 				return DeflateWithFixedHuffmanCodes(compressed_buffer);
 			case 0b10: // compressed with dynamic Huffman codes
-				block_type = BlockType::DynamicHuffmanCodes;
 				break;
 			case 0b11: // reserved
-				block_type = BlockType::Unknown;
 				break;
 		}
 
