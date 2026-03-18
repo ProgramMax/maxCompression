@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 #include "NaiveZlib.hpp"
-#include "NaiveDeflate.hpp""
+#include "NaiveDeflate.hpp"
 
 namespace maxCompression {
 
@@ -42,7 +42,7 @@ namespace maxCompression {
 
 
 		// Get the window size from the first nybble
-		auto window_size = uint16_t{0};
+		/*auto window_size = uint16_t{0};
 		switch ((compressed_buffer[0] >> 4) & 0xF) {
 			case 0:
 				window_size = 256;
@@ -72,6 +72,7 @@ namespace maxCompression {
 				// Error
 				break;
 		}
+		*/
 
 		// Get the compression method from the second nybble
 		switch (compressed_buffer[0] & 0xF) {
