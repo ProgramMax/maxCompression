@@ -56,7 +56,7 @@ CORRECTNESS_TESTS_CXX_OBJS = $(patsubst ../../Code/%.cpp,Build/Objects/%.o,$(COR
 
 
 
-
+GOOGLE_BENCHMARK_INCLUDE_PATHS = \
 	../../Dependencies/benchmark/include/
 GOOGLE_BENCHMARK_INCLUDE_PATHS_FLAGS = $(foreach d, $(GOOGLE_BENCHMARK_INCLUDE_PATHS), -I$d)
 
