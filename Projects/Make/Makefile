@@ -45,9 +45,12 @@ ZLIB_OBJS = $(patsubst ../../Dependencies/zlib/%.c,Build/Objects/Dependencies/zl
 CORRECTNESS_TESTS_PROGRAM = Build/CorrectnessTests
 
 CORRECTNESS_TESTS_CXX_SRCS = \
+	../../Code/BitReader.cpp \
 	../../Code/CorrectnessTestsEntryPoint.cpp \
+	../../Code/NaiveDeflate.cpp \
 	../../Code/NaiveHuffman.cpp \
-	../../Code/NaiveLempelZiv.cpp
+	../../Code/NaiveLempelZiv.cpp \
+	../../Code/NaiveZlib.cpp
 CORRECTNESS_TESTS_CXX_OBJS = $(patsubst ../../Code/%.cpp,Build/Objects/%.o,$(CORRECTNESS_TESTS_CXX_SRCS))
 
 
