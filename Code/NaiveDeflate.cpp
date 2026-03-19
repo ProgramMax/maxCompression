@@ -7,7 +7,7 @@
 
 namespace {
 
-	void DeflateWithFixedHuffmanCodes(maxCompression::BitReader& bit_reader, uint16_t window_size, std::vector<uint8_t>& decompressed_buffer)noexcept {
+	void DeflateWithFixedHuffmanCodes(maxCompression::BitReader& bit_reader, uint16_t /*window_size*/, std::vector<uint8_t>& decompressed_buffer)noexcept {
 		while (true) {
 			auto huffman_code = uint32_t{0};
 
