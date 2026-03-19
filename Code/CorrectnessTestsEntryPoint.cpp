@@ -205,8 +205,8 @@ I do not like green eggs and ham.)"};
 		auto compressed_buffer = std::array<uint8_t, 4 * 1024>{};
 
 		auto compression_state = z_stream{};
-		deflateInit(&compression_state, /*level=*/9);
-		//auto foo2 = deflateInit2_(&compression_state, Z_NO_COMPRESSION, Z_DEFLATED, MAX_WBITS, DEF_MEM_LEVEL, Z_DEFAULT_STRATEGY, ZLIB_VERSION, (int)sizeof(z_stream));
+		//deflateInit(&compression_state, /*level=*/9);
+		deflateInit2_(&compression_state, Z_NO_COMPRESSION, Z_DEFLATED, MAX_WBITS, DEF_MEM_LEVEL, Z_DEFAULT_STRATEGY, ZLIB_VERSION, (int)sizeof(z_stream));
 
 /*
 Z_NO_COMPRESSION
@@ -239,7 +239,7 @@ Z_BEST_COMPRESSION
 		//level 9 = {120, 218, 243, 72, 205, 201, 201, 87, 40, 207, 47, 202, 73, 81, 4, 0, 29, 9, 4, 94}
 
 		// TODO: Implement Deflate & compare the bit stream to make sure it matches zlib
-		auto foo = maxCompression::DecompressZlib(compressed_buffer);
+		maxCompression::DecompressZlib(compressed_buffer);
 	}
 
 } // anonymous namespace
