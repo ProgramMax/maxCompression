@@ -239,7 +239,7 @@ Z_BEST_COMPRESSION
 		//level 9 = {120, 218, 243, 72, 205, 201, 201, 87, 40, 207, 47, 202, 73, 81, 4, 0, 29, 9, 4, 94}
 
 		// TODO: Implement Deflate & compare the bit stream to make sure it matches zlib
-		auto foo = maxCompression::DecompressZlib(compressed_buffer);
+		maxCompression::DecompressZlib(compressed_buffer);
 	}
 
 } // anonymous namespace
