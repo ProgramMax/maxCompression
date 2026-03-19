@@ -18,10 +18,12 @@
 #include <span>
 #include <vector>
 
+#include "BitReader.hpp"
+
 namespace maxCompression {
 
 	std::vector<uint8_t> NaiveDeflateCompress(const std::span<uint8_t>& uncompressed_buffer) noexcept;
-	std::vector<uint8_t> NaiveDeflateDecompress(const std::span<uint8_t>& compressed_buffer) noexcept;
+	void NaiveDeflateDecompress(BitReader& bit_reader, uint16_t window_size, std::vector<uint8_t>& decompressed_buffer) noexcept;
 
 } // namespace maxCompression
 

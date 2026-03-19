@@ -10,6 +10,7 @@
 #include <vector>
 
 #include <zlib.h>
+#include <zutil.h>
 
 #include "NaiveDeflate.hpp"
 #include "NaiveHuffman.hpp"
@@ -203,8 +204,22 @@ I do not like green eggs and ham.)"};
 
 		auto compressed_buffer = std::array<uint8_t, 4 * 1024>{};
 
-		auto compression_state = z_stream{};
+		auto compression_state = z_stream{0};
 		deflateInit(&compression_state, /*level=*/9);
+		//auto foo2 = deflateInit2_(&compression_state, Z_NO_COMPRESSION, Z_DEFLATED, MAX_WBITS, DEF_MEM_LEVEL, Z_DEFAULT_STRATEGY, ZLIB_VERSION, (int)sizeof(z_stream));
+
+/*
+Z_NO_COMPRESSION
+Z_BEST_COMPRESSION
+
+#define Z_FILTERED            1
+#define Z_HUFFMAN_ONLY        2
+#define Z_RLE                 3
+#define Z_FIXED               4
+#define Z_DEFAULT_STRATEGY    0
+*/
+
+
 		compression_state.avail_in = uncompressed_string.length();
 		compression_state.avail_out = compressed_buffer.size();
 		compression_state.next_in = uncompressed_span.data();

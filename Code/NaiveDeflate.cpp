@@ -7,15 +7,7 @@
 
 namespace {
 
-	std::vector<uint8_t> DeflateWithFixedHuffmanCodes(const std::span<uint8_t>& compressed_buffer) noexcept {
-		auto returning = std::vector<uint8_t>{};
-
-		auto bit_reader = maxCompression::BitReader{&compressed_buffer};
-		// Assume we are starting on the 4th bit, since the first 3 will have contained the final block flag and the block type.
-		bit_reader.ReadBit();
-		bit_reader.ReadBit();
-		bit_reader.ReadBit();
-
+	void DeflateWithFixedHuffmanCodes(maxCompression::BitReader& bit_reader, uint16_t window_size, std::vector<uint8_t>& decompressed_buffer)noexcept {
 		while (true) {
 			auto huffman_code = uint32_t{0};
 
@@ -43,7 +35,7 @@ namespace {
 			}
 
 			if (literal_value < 256) {
-				returning.emplace_back(literal_value);
+				decompressed_buffer.emplace_back(literal_value);
 			} else if (literal_value == 256) {
 				// end of block
 				break;
@@ -333,12 +325,10 @@ namespace {
 				auto distance = static_cast<uint16_t>(base_distance + extra_bits);
 
 				for (auto i = size_t{0}; i < length; i++) {
-					returning.emplace_back(returning[returning.size() - distance]);
+					decompressed_buffer.emplace_back(decompressed_buffer[decompressed_buffer.size() - distance]);
 				}
 			}
 		}
-
-		return returning;
 	}
 
 } // anonymous namespace
@@ -468,21 +458,25 @@ namespace maxCompression {
 		return std::vector<uint8_t>{};
 	}
 
-	std::vector<uint8_t> NaiveDeflateDecompress(const std::span<uint8_t>& compressed_buffer) noexcept {
-		//auto is_last_block = static_cast<bool>(compressed_buffer[0] & 1);
+	void NaiveDeflateDecompress(BitReader& bit_reader, uint16_t window_size, std::vector<uint8_t>& decompressed_buffer) noexcept {
+		auto is_last_block = false;
+		do {
+			is_last_block = static_cast<bool>(bit_reader.ReadBit());
 
-		switch ((compressed_buffer[0] >> 1) & 0b11) {
-			case 0b00: // uncompressed
-				break;
-			case 0b01: // compressed with fixed Huffman codes
-				return DeflateWithFixedHuffmanCodes(compressed_buffer);
-			case 0b10: // compressed with dynamic Huffman codes
-				break;
-			case 0b11: // reserved
-				break;
-		}
-
-		return std::vector<uint8_t>{};
+			auto block_type_low_bit = bit_reader.ReadBit();
+			auto block_type_high_bit = bit_reader.ReadBit();
+			auto block_type = (block_type_high_bit << 1) | block_type_low_bit;
+			switch (block_type) {
+				case 0b00: // uncompressed
+					break;
+				case 0b01: // compressed with fixed Huffman codes
+					return DeflateWithFixedHuffmanCodes(bit_reader, window_size, decompressed_buffer);
+				case 0b10: // compressed with dynamic Huffman codes
+					break;
+				case 0b11: // reserved
+					break;
+			}
+		} while (!is_last_block);
 	}
 
 } // namespace maxCompression
