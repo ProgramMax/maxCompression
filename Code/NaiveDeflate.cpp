@@ -9,7 +9,19 @@
 
 namespace {
 
-	void DeflateWithFixedHuffmanCodes(maxCompression::BitReader& bit_reader, uint16_t /*window_size*/, std::vector<uint8_t>& decompressed_buffer)noexcept {
+	void DeflateUncompressedBlock(maxCompression::BitReader& bit_reader, std::vector<uint8_t>& decompressed_buffer) noexcept {
+		bit_reader.SkipToNextByteBoundary();
+		
+		auto length = bit_reader.Read16BitsLSBFirstLittleEndian();
+		auto inverted_length = bit_reader.Read16BitsLSBFirstLittleEndian();
+		// TODO: If we want to validate, check these match
+
+		for (auto i = uint16_t{0}; i < length; i++) {
+			decompressed_buffer.emplace_back(bit_reader.Read8BitsLSBFirst());
+		}
+	}
+
+	void DeflateWithFixedHuffmanCodes(maxCompression::BitReader& bit_reader, uint16_t /*window_size*/, std::vector<uint8_t>& decompressed_buffer) noexcept {
 		while (true) {
 			auto huffman_code = uint32_t{0};
 
@@ -287,9 +299,11 @@ namespace maxCompression {
 			auto block_type = (block_type_high_bit << 1) | block_type_low_bit;
 			switch (block_type) {
 				case 0b00: // uncompressed
+					DeflateUncompressedBlock(bit_reader, decompressed_buffer);
 					break;
 				case 0b01: // compressed with fixed Huffman codes
-					return DeflateWithFixedHuffmanCodes(bit_reader, window_size, decompressed_buffer);
+					DeflateWithFixedHuffmanCodes(bit_reader, window_size, decompressed_buffer);
+					break;
 				case 0b10: // compressed with dynamic Huffman codes
 					break;
 				case 0b11: // reserved

@@ -23,7 +23,11 @@ namespace maxCompression {
 		// That would turn 1234 into 4321.
 		uint8_t ReadNybble() noexcept;
 
+		uint8_t Read8BitsLSBFirst() noexcept;
+		uint16_t Read16BitsLSBFirstLittleEndian() noexcept;
+
 		void SkipBits(uint32_t bits_to_skip) noexcept;
+		void SkipToNextByteBoundary() noexcept;
 
 	private:
 
