@@ -204,7 +204,7 @@ I do not like green eggs and ham.)"};
 
 		auto compressed_buffer = std::array<uint8_t, 4 * 1024>{};
 
-		auto compression_state = z_stream{0};
+		auto compression_state = z_stream{};
 		deflateInit(&compression_state, /*level=*/9);
 		//auto foo2 = deflateInit2_(&compression_state, Z_NO_COMPRESSION, Z_DEFLATED, MAX_WBITS, DEF_MEM_LEVEL, Z_DEFAULT_STRATEGY, ZLIB_VERSION, (int)sizeof(z_stream));
 
