@@ -25,4 +25,26 @@ namespace maxCompression {
 		return bit;
 	}
 
+	uint8_t BitReader::ReadNybble() noexcept {
+		auto first_bit  = ReadBit();
+		auto second_bit = ReadBit();
+		auto third_bit  = ReadBit();
+		auto fourth_bit = ReadBit();
+
+		return (fourth_bit << 3) |
+		       (third_bit  << 2) |
+		       (second_bit << 1) |
+		       (first_bit  << 0);
+	}
+
+	void BitReader::SkipBits(uint32_t bits_to_skip) noexcept {
+		byte_index_ += bits_to_skip / 8;
+		bits_read_this_byte_ += bits_to_skip % 8;
+
+		if (bits_read_this_byte_ >= 8) {
+			byte_index_++;
+			bits_read_this_byte_ %= 8;
+		}
+	}
+
 } // namespace maxCompression

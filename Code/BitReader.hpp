@@ -15,7 +15,15 @@ namespace maxCompression {
 
 		explicit BitReader(const std::span<uint8_t>* buffer) noexcept;
 
+		// Reads the least-significant bit from the buffer.
 		uint8_t ReadBit() noexcept;
+
+		// Reads a nybble preserving the order.
+		// This is different from simply reading 4 bits in a row and shifting between each one.
+		// That would turn 1234 into 4321.
+		uint8_t ReadNybble() noexcept;
+
+		void SkipBits(uint32_t bits_to_skip) noexcept;
 
 	private:
 
