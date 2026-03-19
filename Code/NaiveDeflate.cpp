@@ -5,6 +5,8 @@
 #include "NaiveDeflate.hpp"
 #include "BitReader.hpp"
 
+#include <array>
+
 namespace {
 
 	void DeflateWithFixedHuffmanCodes(maxCompression::BitReader& bit_reader, uint16_t /*window_size*/, std::vector<uint8_t>& decompressed_buffer)noexcept {
@@ -65,99 +67,9 @@ namespace {
 				}
 
 				// Now use those extra bits to find the length
-				auto base_length = uint16_t{0};
-				switch (literal_value) {
-					case 257:
-						base_length = 3;
-						break;
-					case 258:
-						base_length = 4;
-						break;
-					case 259:
-						base_length = 5;
-						break;
-					case 260:
-						base_length = 6;
-						break;
-					case 261:
-						base_length = 7;
-						break;
-					case 262:
-						base_length = 8;
-						break;
-					case 263:
-						base_length = 9;
-						break;
-					case 264:
-						base_length = 10;
-						break;
-					case 265:
-						base_length = 11;
-						break;
-					case 266:
-						base_length = 13;
-						break;
-					case 267:
-						base_length = 15;
-						break;
-					case 268:
-						base_length = 17;
-						break;
-					case 269:
-						base_length = 19;
-						break;
-					case 270:
-						base_length = 23;
-						break;
-					case 271:
-						base_length = 27;
-						break;
-					case 272:
-						base_length = 31;
-						break;
-					case 273:
-						base_length = 35;
-						break;
-					case 274:
-						base_length = 43;
-						break;
-					case 275:
-						base_length = 51;
-						break;
-					case 276:
-						base_length = 59;
-						break;
-					case 277:
-						base_length = 67;
-						break;
-					case 278:
-						base_length = 83;
-						break;
-					case 279:
-						base_length = 99;
-						break;
-					case 280:
-						base_length = 115;
-						break;
-					case 281:
-						base_length = 131;
-						break;
-					case 282:
-						base_length = 163;
-						break;
-					case 283:
-						base_length = 195;
-						break;
-					case 284:
-						base_length = 227;
-						break;
-					case 285:
-						base_length = 285;
-						break;
-					default:
-						// Error
-						break;
-				}
+				constexpr auto base_lengths = std::array<uint16_t, 29>{3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31, 35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 285};
+				// TODO: Make sure the literal value is within range
+				auto base_length = base_lengths[literal_value - 257];
 
 				auto length = static_cast<uint16_t>(base_length + extra_bits);
 
@@ -169,102 +81,9 @@ namespace {
 					literal_value = (literal_value << 1) | bit;
 				}
 
-				auto base_distance = uint16_t{0};
-				switch (literal_value) {
-					case 0:
-						base_distance = 1;
-						break;
-					case 1:
-						base_distance = 2;
-						break;
-					case 2:
-						base_distance = 3;
-						break;
-					case 3:
-						base_distance = 4;
-						break;
-					case 4:
-						base_distance = 5;
-						break;
-					case 5:
-						base_distance = 7;
-						break;
-					case 6:
-						base_distance = 9;
-						break;
-					case 7:
-						base_distance = 13;
-						break;
-					case 8:
-						base_distance = 17;
-						break;
-					case 9:
-						base_distance = 25;
-						break;
-					case 10:
-						base_distance = 33;
-						break;
-					case 11:
-						base_distance = 49;
-						break;
-					case 12:
-						base_distance = 65;
-						break;
-					case 13:
-						base_distance = 97;
-						break;
-					case 14:
-						base_distance = 129;
-						break;
-					case 15:
-						base_distance = 193;
-						break;
-					case 16:
-						base_distance = 257;
-						break;
-					case 17:
-						base_distance = 385;
-						break;
-					case 18:
-						base_distance = 513;
-						break;
-					case 19:
-						base_distance = 769;
-						break;
-					case 20:
-						base_distance = 1025;
-						break;
-					case 21:
-						base_distance = 1537;
-						break;
-					case 22:
-						base_distance = 2049;
-						break;
-					case 23:
-						base_distance = 3073;
-						break;
-					case 24:
-						base_distance = 4097;
-						break;
-					case 25:
-						base_distance = 6145;
-						break;
-					case 26:
-						base_distance = 8193;
-						break;
-					case 27:
-						base_distance = 12289;
-						break;
-					case 28:
-						base_distance = 16375;
-						break;
-					case 29:
-						base_distance = 24577;
-						break;
-					default:
-						// Error
-						break;
-				}
+				constexpr auto base_distances = std::array<uint16_t, 30>{1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193, 257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145, 8193, 12289, 16375, 24577};
+				// TODO: Make sure the literal value is within range
+				auto base_distance = base_distances[literal_value];
 
 				// The distance also has extra bits
 				extra_bits = 0;
