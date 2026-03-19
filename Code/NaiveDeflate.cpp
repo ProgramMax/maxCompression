@@ -13,7 +13,7 @@ namespace {
 		bit_reader.SkipToNextByteBoundary();
 		
 		auto length = bit_reader.Read16BitsLSBFirstLittleEndian();
-		auto inverted_length = bit_reader.Read16BitsLSBFirstLittleEndian();
+		/*auto inverted_length = */bit_reader.Read16BitsLSBFirstLittleEndian();
 		// TODO: If we want to validate, check these match
 
 		for (auto i = uint16_t{0}; i < length; i++) {
