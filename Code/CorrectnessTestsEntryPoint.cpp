@@ -198,27 +198,59 @@ I do not like green eggs and ham.)"};
 
 	void TestDeflate() noexcept {
 		//auto uncompressed_string = std::string_view{"a"};
-		auto uncompressed_string = std::string_view{"Hello world!"};
+		//auto uncompressed_string = std::string_view{"Hello world!"};
 		//auto uncompressed_string = std::string_view{"abracadabra"};
+		//auto uncompressed_string = std::string_view{"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"};
+		/*
+		auto uncompressed_string = std::string_view{
+			"#! tvf\x0a"
+			"namespace import tvf::*\x0a"
+			"\x0a"
+			"tvf::LAYOUT BUMP2 $env(LAY_BUMP2)\x0a"
+			"\x0a"
+			"tvf::LAYOUT PATH $env(LAY_PATH)\x0a"
+			"tvf::LAYOUT PRIMARY $env(LAY_PRIM)\x0a"
+			"tvf::LAYOUT PATH2 $env(LAY_PATH2)\x0a"
+			"tvf::LAYOUT PRIMARY2 $env(LAY_PRIM2)\x0a"
+			"\x0a"
+			"VERBATIM {\x0a"
+			"LAYOUT SYTEM GDSII\x0a"
+			"LAYOUT SYSTEM2 GDSII\x0a"
+			"DRC RESULTS DATABASE \"LVL.out\" ASCII\x0a"
+			"DRC SUMMARY REPORT \"LVL.sum\"\x0a"
+			"DRC MAXIMUM RESULTS ALL\x0a"
+			"}\x0a"
+			"\x0a"
+			"for {set i 0} {$i < $env(LAY_LIMIT)} { incr i } {\x0a"
+			"	set j[expr $i + $env(LAY_BUMP2)]\x0a"
+			"	RULECHECK XOR_$i{\x0a"
+			"		OUTLAYER $i XOR $j\x0a"
+			"	}\x0a"
+			"}\x0a"
+			"\x0a"};
+		*/
+		auto uncompressed_string = std::string_view{
+			"#! tvf\x0a"
+			"namespace import tvf::*\x0a"
+			"\x0a"
+			"tvf::LAYOUT BUMP2 $env(LAY_BUMP2)\x0a"
+			"\x0a"
+			"tvf::LAYOUT PATH $env(LAY_PATH)\x0a"
+			"tvf::LAYOUT PRIMARY $env(LAY_PRIM)\x0a"
+			"tvf::LAYOUT PATH2 $env(LAY_PATH2)\x0a"
+			"tvf::LAYOUT PRIMARY2 $env(LAY_PRIM2)\x0a"
+			"\x0a"
+			"VERBATIM {\x0a"
+			"LAYOUT SYTEM GDSII\x0a"
+			"LAYOUT SYSTEM2 GDSII\x0a"
+			"DRC RESULTS DATABASE \"LVL.out\" "};
+			//"DRC RESULTS DATABASE \"LVL.out\" ASCII\x0a"
 		auto uncompressed_span = std::span<uint8_t>{(uint8_t*)(uncompressed_string.data()), uncompressed_string.length()};
 
 		auto compressed_buffer = std::array<uint8_t, 4 * 1024>{};
 
 		auto compression_state = z_stream{};
-		//deflateInit(&compression_state, /*level=*/9);
-		deflateInit2_(&compression_state, Z_NO_COMPRESSION, Z_DEFLATED, MAX_WBITS, DEF_MEM_LEVEL, Z_DEFAULT_STRATEGY, ZLIB_VERSION, (int)sizeof(z_stream));
-
-/*
-Z_NO_COMPRESSION
-Z_BEST_COMPRESSION
-
-#define Z_FILTERED            1
-#define Z_HUFFMAN_ONLY        2
-#define Z_RLE                 3
-#define Z_FIXED               4
-#define Z_DEFAULT_STRATEGY    0
-*/
-
+		deflateInit(&compression_state, Z_BEST_COMPRESSION);
 
 		compression_state.avail_in = uncompressed_string.length();
 		compression_state.avail_out = compressed_buffer.size();
@@ -228,6 +260,21 @@ Z_BEST_COMPRESSION
 		deflate(&compression_state, Z_FINISH);
 
 		deflateEnd(&compression_state);
+
+
+
+
+		auto decompress_buffer = std::array<uint8_t, 4 * 1024>{};
+
+		auto decompression_state = z_stream{};
+		inflateInit(&decompression_state);
+		decompression_state.avail_in = compression_state.total_out;
+		decompression_state.avail_out = decompress_buffer.size();
+		decompression_state.next_in = compressed_buffer.data();
+		decompression_state.next_out = decompress_buffer.data();
+		inflate(&decompression_state, Z_SYNC_FLUSH);
+		inflateEnd(&decompression_state);
+
 
 		// "a"
 		//level 1   = {120,   1, 75, 4, 0, 0, 98, 0, 98}

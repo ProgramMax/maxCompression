@@ -147,6 +147,7 @@
     <ClInclude Include="..\..\Dependencies\zlib\zutil.h">
       <Filter>Dependencies\zlib</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Code\BitReader.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Code\PerformanceTestsEntryPoint.cpp" />
@@ -255,6 +256,7 @@
     <ClCompile Include="..\..\Dependencies\zlib\zutil.c">
       <Filter>Dependencies\zlib</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Code\BitReader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Dependencies\benchmark\AUTHORS">

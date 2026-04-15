@@ -3,7 +3,9 @@
 // found in the LICENSE file.
 
 #include "NaiveDeflate.hpp"
+
 #include "BitReader.hpp"
+#include "NaiveHuffman.hpp"
 
 #include <array>
 
@@ -162,6 +164,63 @@ namespace {
 		}
 	}
 
+	void DeflateWithDynamicHuffmanCodes(maxCompression::BitReader& bit_reader, uint16_t /*window_size*/, std::vector<uint8_t>& decompressed_buffer) noexcept {
+		auto literal_codes = uint16_t{0};
+		literal_codes = bit_reader.ReadNBitsMSBFirst(5);
+		/*
+		literal_codes |= bit_reader.ReadBit() << 0;
+		literal_codes |= bit_reader.ReadBit() << 1;
+		literal_codes |= bit_reader.ReadBit() << 2;
+		literal_codes |= bit_reader.ReadBit() << 3;
+		literal_codes |= bit_reader.ReadBit() << 4;
+		*/
+		literal_codes += 257;
+
+		auto distance_codes = uint16_t{0};
+		distance_codes = bit_reader.ReadNBitsMSBFirst(5);
+		/*
+		distance_codes |= bit_reader.ReadBit() << 0;
+		distance_codes |= bit_reader.ReadBit() << 1;
+		distance_codes |= bit_reader.ReadBit() << 2;
+		distance_codes |= bit_reader.ReadBit() << 3;
+		distance_codes |= bit_reader.ReadBit() << 4;
+		*/
+		distance_codes += 1;
+
+		auto code_length_codes = uint16_t{0};
+		code_length_codes = bit_reader.ReadNBitsMSBFirst(4);
+		/*
+		code_length_codes |= bit_reader.ReadBit() << 0;
+		code_length_codes |= bit_reader.ReadBit() << 1;
+		code_length_codes |= bit_reader.ReadBit() << 2;
+		code_length_codes |= bit_reader.ReadBit() << 3;
+		*/
+		code_length_codes += 4;
+
+
+		// Each code length is stored in 3 bits.
+		auto code_lengths = std::vector<uint8_t>{};
+		for (auto i = size_t{0}; i < code_length_codes; i++) {
+			auto code_length = uint8_t{0};
+			code_length = bit_reader.ReadNBitsMSBFirst(3);
+			/*
+			code_length |= bit_reader.ReadBit() << 0;
+			code_length |= bit_reader.ReadBit() << 1;
+			code_length |= bit_reader.ReadBit() << 2;
+			*/
+			code_lengths.emplace_back(code_length);
+		}
+
+		constexpr auto code_lengths_in_order = std::array{16ui16, 17ui16, 18ui16, 0ui16, 8ui16, 7ui16, 9ui16, 6ui16, 10ui16, 5ui16, 11ui16, 4ui16, 12ui16, 3ui16, 13ui16, 2ui16, 14ui16, 1ui16, 15ui16};
+		auto canonical_codes = maxCompression::CanonicalHuffmanCode{std::move(code_lengths), std::vector<uint16_t>{std::begin(code_lengths_in_order), std::end(code_lengths_in_order)}};
+
+
+
+
+
+		decompressed_buffer.emplace_back(1);
+	}
+
 } // anonymous namespace
 
 namespace maxCompression {
@@ -305,6 +364,7 @@ namespace maxCompression {
 					DeflateWithFixedHuffmanCodes(bit_reader, window_size, decompressed_buffer);
 					break;
 				case 0b10: // compressed with dynamic Huffman codes
+					DeflateWithDynamicHuffmanCodes(bit_reader, window_size, decompressed_buffer);
 					break;
 				case 0b11: // reserved
 					break;

@@ -25,6 +25,44 @@ namespace maxCompression {
 		return bit;
 	}
 
+	uint8_t BitReader::ReadNBitsMSBFirst(uint8_t bits_to_read) noexcept {
+		auto bits_left_this_byte = 8 - bits_read_this_byte_;
+
+		// Try a simple shift & mask if available.
+		if (bits_left_this_byte >= bits_to_read) {
+			auto mask = uint8_t{0b1111'1111};
+			mask <<= bits_read_this_byte_ + bits_to_read;
+			mask = ~mask;
+
+			auto masked_value = (*buffer_)[byte_index_] & mask;
+			masked_value >>= bits_read_this_byte_;
+
+			bits_read_this_byte_ += bits_to_read;
+			if (bits_read_this_byte_ == 8) {
+				byte_index_++;
+				bits_read_this_byte_ = 0;
+			}
+
+			return masked_value;
+		}
+
+		// The value spans a byte boundary. We need combine both parts.
+		auto low_part = (*buffer_)[byte_index_] >> bits_read_this_byte_;
+
+		byte_index_++;
+		auto bits_to_read_next_byte = bits_to_read - bits_left_this_byte;
+		auto high_mask = ~(uint8_t{0b1111'1111} << bits_to_read_next_byte);
+		auto high_part = (*buffer_)[byte_index_] & high_mask;
+
+		// Shift the high part into place before combining
+		high_part <<= bits_left_this_byte;
+		bits_read_this_byte_ = bits_to_read_next_byte;
+
+
+
+		return high_part | low_part;
+	}
+
 	uint8_t BitReader::ReadNybble() noexcept {
 		auto first_bit  = ReadBit();
 		auto second_bit = ReadBit();

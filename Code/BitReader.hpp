@@ -18,6 +18,8 @@ namespace maxCompression {
 		// Reads the least-significant bit from the buffer.
 		uint8_t ReadBit() noexcept;
 
+		uint8_t ReadNBitsMSBFirst(uint8_t bits_to_read) noexcept;
+
 		// Reads a nybble preserving the order.
 		// This is different from simply reading 4 bits in a row and shifting between each one.
 		// That would turn 1234 into 4321.
