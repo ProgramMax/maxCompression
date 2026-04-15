@@ -11,11 +11,33 @@
 namespace maxCompression {
 
 
-	std::array<uint32_t, 256> CountOccurrences(std::span<uint8_t> uncompressed_data) noexcept {
-		auto occurrences = std::array<uint32_t, 256>{};
+	std::vector<uint32_t> CountOccurrences(std::span<uint8_t> uncompressed_data) noexcept {
 
-		for (auto& byte : uncompressed_data) {
-			occurrences[byte]++;
+		// First loop through to find the max value used.
+		auto max = *std::max_element(std::cbegin(uncompressed_data), std::cend(uncompressed_data));
+
+		// Then allocate a vector large enough to store up to that max...
+		auto occurrences = std::vector<uint32_t>(max + 1, 0);
+
+		// ...and count the occurrences of each value.
+		for (auto& symbol : uncompressed_data) {
+			occurrences[symbol]++;
+		}
+
+		return occurrences;
+	}
+
+	std::vector<uint32_t> CountOccurrences(std::span<uint16_t> uncompressed_data) noexcept {
+
+		// First loop through to find the max value used.
+		auto max = *std::max_element(std::cbegin(uncompressed_data), std::cend(uncompressed_data));
+
+		// Then allocate a vector large enough to store up to that max...
+		auto occurrences = std::vector<uint32_t>{max};
+
+		// ...and count the occurrences of each value.
+		for (auto& symbol : uncompressed_data) {
+			occurrences[symbol]++;
 		}
 
 		return occurrences;
@@ -26,7 +48,7 @@ namespace maxCompression {
 		: count_(std::move(count))
 	{}
 
-	NaiveHuffmanNode::NaiveHuffmanNode(uint32_t count, uint8_t value) noexcept
+	NaiveHuffmanNode::NaiveHuffmanNode(uint32_t count, uint16_t value) noexcept
 		: count_(std::move(count))
 		, value_(std::move(value))
 	{}
@@ -34,15 +56,15 @@ namespace maxCompression {
 	NaiveHuffmanNode::NaiveHuffmanNode(NaiveHuffmanNode&& rhs) noexcept = default;
 
 
-	std::unique_ptr<NaiveHuffmanNode> CreateHuffmanTree(const std::array<uint32_t, 256>& occurrences) noexcept {
+	std::unique_ptr<NaiveHuffmanNode> CreateHuffmanTree(std::span<uint32_t> occurrences) noexcept {
 		// First, eliminate any non-zero count elements
-		std::vector<std::unique_ptr<NaiveHuffmanNode>> nodes;
+		auto nodes = std::vector<std::unique_ptr<NaiveHuffmanNode>>{};
 
 		for (auto i = size_t{0}; i < occurrences.size(); i++) {
 			auto count = occurrences[i];
 
 			if (count != 0) {
-				nodes.push_back(std::make_unique<NaiveHuffmanNode>(count, static_cast<uint8_t>(i)));
+				nodes.push_back(std::make_unique<NaiveHuffmanNode>(count, static_cast<uint16_t>(i)));
 			}
 		}
 
@@ -79,19 +101,19 @@ namespace maxCompression {
 		return std::move(nodes[0]);
 	}
 
-	CanonicalHuffmanCode::CanonicalHuffmanCode(std::vector<uint8_t> code_lengths, std::vector<uint8_t> symbols) noexcept
+	CanonicalHuffmanCode::CanonicalHuffmanCode(std::vector<uint8_t> code_lengths, std::vector<uint16_t> symbols) noexcept
 		: code_lengths_(std::move(code_lengths))
 		, symbols_(std::move(symbols))
 	{}
 
 	CanonicalHuffmanCode GetCanonicalHuffmanCodes(const NaiveHuffmanNode* root) noexcept {
 		struct SymbolAndLength {
-			explicit SymbolAndLength(uint8_t symbol, uint8_t length) noexcept
+			explicit SymbolAndLength(uint16_t symbol, uint8_t length) noexcept
 				: symbol_(std::move(symbol))
 				, length_(std::move(length))
 			{}
 
-			uint8_t symbol_;
+			uint16_t symbol_;
 			uint8_t length_;
 		};
 
@@ -152,7 +174,7 @@ namespace maxCompression {
 		}
 
 		// Create a vector of just those symbol values, preserving the sorted order
-		std::vector<uint8_t> symbols;
+		std::vector<uint16_t> symbols;
 		for (auto& symbol : used_symbols) {
 			symbols.emplace_back(symbol.symbol_);
 		}

@@ -22,7 +22,12 @@
 namespace maxCompression {
 
 
-	std::array<uint32_t, 256> CountOccurrences(std::span<uint8_t> uncompressed_data) noexcept;
+	// The returned vector contains the count of occurrences at a given symbol (value).
+	// The input is of type uint16_t because deflate will compress values outside a byte range.
+	// This allows it to insert special codes.
+	// A second function with input of type uint8_t is provided just to test the core concept.
+	std::vector<uint32_t> CountOccurrences(std::span<uint8_t> uncompressed_data) noexcept;
+	std::vector<uint32_t> CountOccurrences(std::span<uint16_t> uncompressed_data) noexcept;
 
 
 	// Every unique byte found in the uncompressed data will have one of these nodes created.
@@ -32,20 +37,20 @@ namespace maxCompression {
 	struct NaiveHuffmanNode {
 
 		explicit NaiveHuffmanNode(uint32_t count) noexcept;
-		explicit NaiveHuffmanNode(uint32_t count, uint8_t value) noexcept;
+		explicit NaiveHuffmanNode(uint32_t count, uint16_t value) noexcept;
 		NaiveHuffmanNode(NaiveHuffmanNode&& rhs) noexcept;
 
 		uint32_t count_; // The occurances of |value_| in the uncompressed string
 		// Or, if |value_|
 
-		std::optional<uint8_t> value_ = std::nullopt; // The byte found in the uncompressed data
+		std::optional<uint16_t> value_ = std::nullopt; // The byte found in the uncompressed data
 
 		// Binary tree elements
 		std::unique_ptr<NaiveHuffmanNode> left_ = nullptr;
 		std::unique_ptr<NaiveHuffmanNode> right_ = nullptr;
 
 	};
-	std::unique_ptr<NaiveHuffmanNode> CreateHuffmanTree(const std::array<uint32_t, 256>& occurrences) noexcept;
+	std::unique_ptr<NaiveHuffmanNode> CreateHuffmanTree(std::span<uint32_t> occurrences) noexcept;
 
 
 	// Canonical Huffman codes are an efficient way to store the tree.
@@ -59,10 +64,10 @@ namespace maxCompression {
 	// One lane tries 4-bit, one tries 5-bit, etc. The first match tells us the bit length to consider.
 	struct CanonicalHuffmanCode {
 
-		explicit CanonicalHuffmanCode(std::vector<uint8_t> code_lengths, std::vector<uint8_t> symbols) noexcept;
+		explicit CanonicalHuffmanCode(std::vector<uint8_t> code_lengths, std::vector<uint16_t> symbols) noexcept;
 
 		std::vector<uint8_t> code_lengths_;
-		std::vector<uint8_t> symbols_;
+		std::vector<uint16_t> symbols_;
 
 	};
 	CanonicalHuffmanCode GetCanonicalHuffmanCodes(const NaiveHuffmanNode* root) noexcept;
