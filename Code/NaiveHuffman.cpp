@@ -390,7 +390,7 @@ namespace maxCompression {
 		return canonical_huffman_tree;
 	}
 
-	std::vector<uint8_t> DecompressHuffman(BitReader& bit_reader const CanonicalHuffmanCodeTree& canonical_huffman_code_tree) noexcept {
+	std::vector<uint8_t> DecompressHuffman(BitReader& bit_reader, const CanonicalHuffmanCodeTree& canonical_huffman_code_tree) noexcept {
 		auto decompressed_buffer = std::vector<uint8_t>{};
 
 
