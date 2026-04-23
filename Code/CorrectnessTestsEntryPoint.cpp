@@ -286,7 +286,11 @@ I do not like green eggs and ham.)"};
 		//level 9 = {120, 218, 243, 72, 205, 201, 201, 87, 40, 207, 47, 202, 73, 81, 4, 0, 29, 9, 4, 94}
 
 		// TODO: Implement Deflate & compare the bit stream to make sure it matches zlib
-		maxCompression::DecompressZlib(compressed_buffer);
+		auto decompressed_buffer = maxCompression::DecompressZlib(compressed_buffer);
+		std::cout << '\n' << '\n';
+		for (auto byte : decompressed_buffer) {
+			std::cout << (char)byte;
+		}
 	}
 
 } // anonymous namespace

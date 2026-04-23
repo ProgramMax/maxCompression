@@ -59,6 +59,9 @@
     <ClInclude Include="..\..\Dependencies\zlib\zlib.h" />
     <ClInclude Include="..\..\Dependencies\zlib\zutil.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Code\NaiveHuffman.inl" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

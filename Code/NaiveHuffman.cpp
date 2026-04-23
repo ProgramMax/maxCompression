@@ -101,7 +101,7 @@ namespace maxCompression {
 		return std::move(nodes[0]);
 	}
 
-	CanonicalHuffmanCode::CanonicalHuffmanCode(std::vector<uint8_t> code_lengths, std::vector<uint16_t> symbols) noexcept
+	CanonicalHuffmanCode::CanonicalHuffmanCode(std::vector<uint16_t> code_lengths, std::vector<uint16_t> symbols) noexcept
 		: code_lengths_(std::move(code_lengths))
 		, symbols_(std::move(symbols))
 	{}
@@ -154,7 +154,7 @@ namespace maxCompression {
 		});
 
 		// Calculate how many symbols share a given bit length
-		std::vector<uint8_t> bit_length_occurances;
+		std::vector<uint16_t> bit_length_occurances;
 		auto max_bit_length = used_symbols[used_symbols.size() - 1].length_;
 		auto current_symbol_index = size_t{0};
 
@@ -330,66 +330,106 @@ namespace maxCompression {
 		return decompressed_buffer;
 	}
 
-	std::vector<uint8_t> DecompressHuffman(const CompressResult& compress_result, const CanonicalHuffmanCode& canonical_huffman_codes) noexcept {
-		struct TreeLayer {
-			uint32_t first_code_word_;
-			std::vector<uint8_t> symbols_; // The nth element will have the code word first_code_word_ + n.
-			// This is the advantage of canonical Huffman codes.
-		};
+	CanonicalHuffmanCodeTree PopulateCanonicalHuffmanTree(const CanonicalHuffmanCode& canonical_huffman_codes) noexcept {
+		auto canonical_huffman_tree = CanonicalHuffmanCodeTree{};
 
-		// First, create a list of symbols at each tree layer.
-		// The outer index is the tree layer. It also acts as the length of the code word (n+1).
-		// The inner index is the n-th symbol at that layer.
-		auto symbol_tree_layers = std::vector<TreeLayer>{};
+		// First, create all the necessary tree layers
+		auto tree_depth = *std::max_element(std::begin(canonical_huffman_codes.code_lengths_), std::end(canonical_huffman_codes.code_lengths_));
 
+		// Then, put each symbol in its layer
+		canonical_huffman_tree.layers_.resize(tree_depth);
+		for (auto i = canonical_huffman_codes.code_lengths_.size(); i != 0; i--) {
+			auto& symbol = canonical_huffman_codes.symbols_[i - 1];
+			auto& code_length = canonical_huffman_codes.code_lengths_[i - 1];
 
+			// Ignore code length of zero. That means it is unused.
+			// This also means layer index [0] would also be useless.
+			// So we shift all layers down 1.
+			if (code_length != 0) {
+				canonical_huffman_tree.layers_[code_length - 1].symbols_.emplace_back(symbol);
+			}
+		}
 
+		// Then, sort each layer ascending
+		for (auto& layer : canonical_huffman_tree.layers_) {
+			std::sort(std::begin(layer.symbols_), std::end(layer.symbols_));
+		}
 
+		// Then, find the first codeword for each layer
+		auto code = uint32_t{0};
+		for (auto& layer : canonical_huffman_tree.layers_) {
+			layer.first_code_word_ = code;
+			code += layer.symbols_.size();
+			code <<= 1;
+		}
+		
 
+/*
 
 		auto symbol_index = size_t{0};
-		auto working_symbol_encoding = SymbolEncoding{}; 
+		auto working_symbol_encoding = SymbolEncoding{};
 
 		auto code_length_size = canonical_huffman_codes.code_lengths_.size();
-		for (auto i = size_t{0}; i < code_length_size; i++) {
-			// At each new code length size, first shift the working encoding left
+		for (auto layer_index = size_t{0}; symbol_index < code_length_size; layer_index++) {
+			// At each new code length size, add one and shift the working encoding left
 			working_symbol_encoding.code_length_++;
 			working_symbol_encoding.traversal_path_ <<= 1;
 
 			// Create an entry for this layer
-			symbol_tree_layers.emplace_back(working_symbol_encoding.traversal_path_, std::vector<uint8_t>{});
+			canonical_huffman_tree.layers_.emplace_back(working_symbol_encoding.traversal_path_, std::vector<uint8_t>{});
 
-			auto symbols_at_this_code_length = canonical_huffman_codes.code_lengths_[i];
-			for (auto j = size_t{0}; j < symbols_at_this_code_length; j++) {
+			auto symbols_at_this_code_length = canonical_huffman_codes.code_lengths_[layer_index];
+			for (auto j = symbols_at_this_code_length; j != 0; j--) {
 				auto current_symbol = canonical_huffman_codes.symbols_[symbol_index++];
-				symbol_tree_layers[working_symbol_encoding.code_length_ - 1].symbols_.emplace_back(current_symbol);
+				canonical_huffman_tree.layers_[working_symbol_encoding.code_length_ - 1].symbols_.emplace_back(current_symbol);
 				working_symbol_encoding.traversal_path_++;
 			}
 		}
+*/
 
+		return canonical_huffman_tree;
+	}
 
-
-
-
-
-
+	std::vector<uint8_t> DecompressHuffman(BitReader& bit_reader, size_t buffer_size, const CanonicalHuffmanCodeTree& canonical_huffman_code_tree) noexcept {
 		auto decompressed_buffer = std::vector<uint8_t>{};
 
-		auto& compressed_buffer = compress_result.compressed_buffer_;
-		auto buffer_size = compressed_buffer.size();
 
 		auto current_byte = size_t{0};
+		const auto tree_layer_size = canonical_huffman_code_tree.layers_.size();
+		for ( ; bit_reader.SizeLeft() != 0; ) {
+
+			auto tree_layer_index = size_t{0};
+			auto code = uint16_t{0};
+
+			for ( ; tree_layer_index < tree_layer_size; tree_layer_index++) {
+				code <<= 1;
+				code |= bit_reader.ReadBit();
+				if (code < canonical_huffman_code_tree.layers_[tree_layer_index].first_code_word_) {
+					// This is the layer of the tree
+					break;
+				}
+			}
+
+			auto symbol_index = code - canonical_huffman_code_tree.layers_[tree_layer_index].first_code_word_;
+			decompressed_buffer.emplace_back(canonical_huffman_code_tree.layers_[tree_layer_index].symbols_[symbol_index]);
+		}
+
+		return decompressed_buffer;
+
+
+
+		/*
 		//auto current_bit_offset = uint8_t{0};
 		auto bits_left_in_next_byte = uint8_t{8};
 
-		auto decompressed_byte = compressed_buffer[0];
+		auto decompressed_byte = bit_stream[0];
 
 		for ( ; current_byte < buffer_size; ) {
 			// Find the length of this code word
 			auto tree_layer_first_code_word = uint32_t{};
 			auto code_length = size_t{0};
-			for ( ; code_length < symbol_tree_layers.size(); code_length++) {
-				tree_layer_first_code_word = symbol_tree_layers[code_length].first_code_word_;
+			for ( ; code_length < canonical_huffman_code_tree.layers_.size(); code_length++) {
+				tree_layer_first_code_word = canonical_huffman_code_tree.layers_[code_length].first_code_word_;
 				auto code = static_cast<uint32_t>(decompressed_byte >> (8 - code_length - 1));
 				if (code < tree_layer_first_code_word) {
 					// This is the layer of the tree
@@ -399,13 +439,13 @@ namespace maxCompression {
 
 			// TODO: This name shadows the previous name
 			auto symbol_index = (decompressed_byte >> (8 - code_length)) - tree_layer_first_code_word;
-			decompressed_buffer.emplace_back(symbol_tree_layers[code_length - 1].symbols_[symbol_index]);
+			decompressed_buffer.emplace_back(canonical_huffman_code_tree.layers_[code_length - 1].symbols_[symbol_index]);
 
 			// Prepare the next code to be read
 			decompressed_byte <<= code_length;
 			if (current_byte != buffer_size - 1) {
 				auto next_byte_mask = 0xff >> code_length;
-				auto next_byte = compressed_buffer[current_byte + 1];
+				auto next_byte = bit_stream[current_byte + 1];
 				next_byte >>= 8 - code_length;
 				next_byte &= next_byte_mask;
 				decompressed_byte |= next_byte;
@@ -416,7 +456,7 @@ namespace maxCompression {
 				if (code_length > bits_left_in_next_byte) {
 					// ...start by consuming all the bits of the next byte...
 					auto next_byte_mask = 0xff >> bits_left_in_next_byte;
-					auto next_byte = compressed_buffer[current_byte + 1];
+					auto next_byte = bit_stream[current_byte + 1];
 					next_byte >>= 8 - bits_left_in_next_byte;
 					next_byte &= next_byte_mask;
 
@@ -433,6 +473,7 @@ namespace maxCompression {
 		}
 
 		return decompressed_buffer;
+		*/
 	}
 
 } // namespace maxCompression

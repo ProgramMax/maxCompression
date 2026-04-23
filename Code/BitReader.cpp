@@ -111,4 +111,12 @@ namespace maxCompression {
 		bits_read_this_byte_ = 0;
 	}
 
+	size_t BitReader::Size() const noexcept {
+		return buffer_->size();
+	}
+
+	size_t BitReader::SizeLeft() const noexcept {
+		return buffer_->size() - byte_index_;
+	}
+
 } // namespace maxCompression
