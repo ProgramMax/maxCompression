@@ -11,6 +11,10 @@
 
 namespace {
 
+	constexpr uint16_t operator"" ui16(unsigned long long literal) noexcept {
+		return literal;
+	}
+
 	void DeflateUncompressedBlock(maxCompression::BitReader& bit_reader, std::vector<uint8_t>& decompressed_buffer) noexcept {
 		bit_reader.SkipToNextByteBoundary();
 		
