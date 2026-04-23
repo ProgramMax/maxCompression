@@ -93,6 +93,7 @@ PERFORMANCE_TESTS_INCLUDE_PATHS_FLAGS = $(foreach d, $(PERFORMANCE_TESTS_INCLUDE
 PERFORMANCE_TESTS_PROGRAM = Build/PerformanceTests
 
 PERFORMANCE_TESTS_SRCS = \
+	../../Code/BitReader.cpp \
 	../../Code/PerformanceTestsEntryPoint.cpp \
 	../../Code/NaiveHuffman.cpp \
 	../../Code/NaiveLempelZiv.cpp
