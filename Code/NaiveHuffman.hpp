@@ -19,6 +19,8 @@
 #include <span>
 #include <vector>
 
+#include "BitReader.hpp"
+
 namespace maxCompression {
 
 
@@ -64,9 +66,9 @@ namespace maxCompression {
 	// One lane tries 4-bit, one tries 5-bit, etc. The first match tells us the bit length to consider.
 	struct CanonicalHuffmanCode {
 
-		explicit CanonicalHuffmanCode(std::vector<uint8_t> code_lengths, std::vector<uint16_t> symbols) noexcept;
+		explicit CanonicalHuffmanCode(std::vector<uint16_t> code_lengths, std::vector<uint16_t> symbols) noexcept;
 
-		std::vector<uint8_t> code_lengths_;
+		std::vector<uint16_t> code_lengths_;
 		std::vector<uint16_t> symbols_;
 
 	};
@@ -98,12 +100,33 @@ namespace maxCompression {
 
 	std::unique_ptr<NaiveHuffmanNode> ReconstituteHuffmanTree(const std::array<SymbolEncoding, 256>& symbol_encodings) noexcept;
 
+	struct CanonicalHuffmanCodeTreeLayer {
+		uint32_t first_code_word_;
+		std::vector<uint16_t> symbols_; // The nth element will have the code word first_code_word_ + n.
+		// This is the advantage of canonical Huffman codes.
+	};
+
+	struct CanonicalHuffmanCodeTree {
+		// The outer index is the tree layer. It also acts as the length of a code word (n+1).
+		// The inner index (layers_[i].symbols_[j]) is the nth symbol at that layer.
+		std::vector<CanonicalHuffmanCodeTreeLayer> layers_;
+	};
+
+	CanonicalHuffmanCodeTree PopulateCanonicalHuffmanTree(const CanonicalHuffmanCode& canonical_huffman_codes) noexcept;
+
 
 	std::vector<uint8_t> DecompressHuffman(const CompressResult& compress_result, const NaiveHuffmanNode* root) noexcept;
 
-	std::vector<uint8_t> DecompressHuffman(const CompressResult& compress_result, const CanonicalHuffmanCode& canonical_huffman_codes) noexcept;
+	template<typename SymbolDecodedCallback>
+	void DecompressHuffmanUpToSymbolCount(BitReader& bit_reader, const CanonicalHuffmanCodeTree& canonical_huffman_code_tree, size_t up_to_symbol_count, SymbolDecodedCallback symbol_decoded_callback) noexcept;
+	template<typename SymbolDecodedCallback>
+	void DecompressHuffman(BitReader& bit_reader, const CanonicalHuffmanCodeTree& canonical_huffman_code_tree, SymbolDecodedCallback symbol_decoded_callback) noexcept;
+
+	std::vector<uint8_t> DecompressHuffman(BitReader& bit_reader, const CanonicalHuffmanCodeTree& canonical_huffman_code_tree) noexcept;
 
 
 }; // namespace maxCompression
+
+#include "NaiveHuffman.inl"
 
 #endif // #ifndef MAXCOMPRESSION_NAIVEHUFFMAN_HPP

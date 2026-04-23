@@ -31,6 +31,9 @@ namespace maxCompression {
 		void SkipBits(uint32_t bits_to_skip) noexcept;
 		void SkipToNextByteBoundary() noexcept;
 
+		size_t Size() const noexcept;
+		size_t SizeLeft() const noexcept;
+
 	private:
 
 		const std::span<uint8_t>* buffer_;

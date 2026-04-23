@@ -101,4 +101,7 @@
       <UniqueIdentifier>{f1b0c84a-1dee-4443-a0ea-768e64d07458}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Code\NaiveHuffman.inl" />
+  </ItemGroup>
 </Project>

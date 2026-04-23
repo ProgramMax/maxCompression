@@ -4,12 +4,16 @@
 
 #include "NaiveDeflate.hpp"
 
-#include "BitReader.hpp"
+#include <array>
+#include <iostream>
+
 #include "NaiveHuffman.hpp"
 
-#include <array>
-
 namespace {
+
+	constexpr uint16_t operator"" _ui16(unsigned long long literal) noexcept {
+		return literal;
+	}
 
 	void DeflateUncompressedBlock(maxCompression::BitReader& bit_reader, std::vector<uint8_t>& decompressed_buffer) noexcept {
 		bit_reader.SkipToNextByteBoundary();
@@ -167,58 +171,131 @@ namespace {
 	void DeflateWithDynamicHuffmanCodes(maxCompression::BitReader& bit_reader, uint16_t /*window_size*/, std::vector<uint8_t>& decompressed_buffer) noexcept {
 		auto literal_codes = uint16_t{0};
 		literal_codes = bit_reader.ReadNBitsMSBFirst(5);
-		/*
-		literal_codes |= bit_reader.ReadBit() << 0;
-		literal_codes |= bit_reader.ReadBit() << 1;
-		literal_codes |= bit_reader.ReadBit() << 2;
-		literal_codes |= bit_reader.ReadBit() << 3;
-		literal_codes |= bit_reader.ReadBit() << 4;
-		*/
 		literal_codes += 257;
 
 		auto distance_codes = uint16_t{0};
 		distance_codes = bit_reader.ReadNBitsMSBFirst(5);
-		/*
-		distance_codes |= bit_reader.ReadBit() << 0;
-		distance_codes |= bit_reader.ReadBit() << 1;
-		distance_codes |= bit_reader.ReadBit() << 2;
-		distance_codes |= bit_reader.ReadBit() << 3;
-		distance_codes |= bit_reader.ReadBit() << 4;
-		*/
 		distance_codes += 1;
 
 		auto code_length_codes = uint16_t{0};
 		code_length_codes = bit_reader.ReadNBitsMSBFirst(4);
-		/*
-		code_length_codes |= bit_reader.ReadBit() << 0;
-		code_length_codes |= bit_reader.ReadBit() << 1;
-		code_length_codes |= bit_reader.ReadBit() << 2;
-		code_length_codes |= bit_reader.ReadBit() << 3;
-		*/
 		code_length_codes += 4;
 
 
 		// Each code length is stored in 3 bits.
-		auto code_lengths = std::vector<uint8_t>{};
+		auto code_lengths = std::vector<uint16_t>{};
 		for (auto i = size_t{0}; i < code_length_codes; i++) {
-			auto code_length = uint8_t{0};
+			auto code_length = uint16_t{0};
 			code_length = bit_reader.ReadNBitsMSBFirst(3);
-			/*
-			code_length |= bit_reader.ReadBit() << 0;
-			code_length |= bit_reader.ReadBit() << 1;
-			code_length |= bit_reader.ReadBit() << 2;
-			*/
 			code_lengths.emplace_back(code_length);
 		}
 
-		constexpr auto code_lengths_in_order = std::array{16ui16, 17ui16, 18ui16, 0ui16, 8ui16, 7ui16, 9ui16, 6ui16, 10ui16, 5ui16, 11ui16, 4ui16, 12ui16, 3ui16, 13ui16, 2ui16, 14ui16, 1ui16, 15ui16};
+		constexpr auto code_lengths_in_order = std::array{16_ui16, 17_ui16, 18_ui16, 0_ui16, 8_ui16, 7_ui16, 9_ui16, 6_ui16, 10_ui16, 5_ui16, 11_ui16, 4_ui16, 12_ui16, 3_ui16, 13_ui16, 2_ui16, 14_ui16, 1_ui16, 15_ui16};
 		auto canonical_codes = maxCompression::CanonicalHuffmanCode{std::move(code_lengths), std::vector<uint16_t>{std::begin(code_lengths_in_order), std::end(code_lengths_in_order)}};
+		auto canonical_huffman_tree = PopulateCanonicalHuffmanTree(std::move(canonical_codes));
+
+		auto last_symbol = uint16_t{0};
+		auto temporary_decompression = std::vector<uint16_t>{};
+		auto dictionary_symbol_matched = [&temporary_decompression, &bit_reader, &last_symbol](uint16_t symbol) -> size_t {
+			switch (symbol) {
+			default: // values 0-15
+				last_symbol = symbol;
+				temporary_decompression.emplace_back(symbol);
+				return 1;
+				break;
+			case 16:
+				{
+					auto repeat = bit_reader.ReadNBitsMSBFirst(2);
+					repeat += 3;
+					for (auto i = repeat; i != 0; i--) {
+						temporary_decompression.emplace_back(last_symbol);
+					}
+					return repeat;
+				}
+				break;
+			case 17:
+				{
+					auto zeroes_to_add = bit_reader.ReadNBitsMSBFirst(3);
+					zeroes_to_add += 3;
+					for (auto i = zeroes_to_add; i != 0; i--) {
+						temporary_decompression.emplace_back(0);
+					}
+					return zeroes_to_add;
+				}
+				break;
+			case 18:
+				{
+					auto zeroes_to_add = bit_reader.ReadNBitsMSBFirst(7);
+					zeroes_to_add += 11;
+					for (auto i = zeroes_to_add; i != 0; i--) {
+						temporary_decompression.emplace_back(0);
+					}
+					return zeroes_to_add;
+				}
+				break;
+			// We will never encounter a value >18
+			}
+		};
+		DecompressHuffmanUpToSymbolCount(bit_reader, canonical_huffman_tree, literal_codes, dictionary_symbol_matched);
+		auto literals_and_lengths = std::move(temporary_decompression);
+
+		auto temporary_literal_values = std::vector<uint16_t>{};
+		for (auto i = size_t{0}; i < literal_codes; i++) {
+			temporary_literal_values.emplace_back(i);
+		}
+		auto literal_canonical_codes = maxCompression::CanonicalHuffmanCode{std::move(literals_and_lengths), std::move(temporary_literal_values)};
+		auto literal_canonical_huffman_tree = PopulateCanonicalHuffmanTree(std::move(literal_canonical_codes));
+
+
+		last_symbol = 0;
+		temporary_decompression = std::vector<uint16_t>{};
+		DecompressHuffmanUpToSymbolCount(bit_reader, canonical_huffman_tree, distance_codes, dictionary_symbol_matched);
+		auto distances = std::move(temporary_decompression);
+
+		auto temporary_distance_values = std::vector<uint16_t>{};
+		for (auto i = size_t{0}; i < 29; i++) {
+			temporary_distance_values.emplace_back(i);
+		}
+		auto distance_canonical_codes = maxCompression::CanonicalHuffmanCode{std::move(distances), std::move(temporary_distance_values)};
+		auto distance_canonical_huffman_tree = PopulateCanonicalHuffmanTree(std::move(distance_canonical_codes));
 
 
 
+		auto symbol_matched = [&bit_reader, &decompressed_buffer, &distance_canonical_huffman_tree](uint16_t symbol) -> bool {
+			if (symbol < 256) {
+				std::cout << (char)symbol;
+				decompressed_buffer.emplace_back(symbol);
+				return true;
+			} else if (symbol == 256) {
+				// end of block
+				return false;
+			} else { // 257-285
+				constexpr auto extra_bits_to_read = std::array{0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5};
+				auto extra_length = bit_reader.ReadNBitsMSBFirst(extra_bits_to_read[symbol - 257]);
+				constexpr auto base_length = std::array{3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31, 35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227};
+				auto total_length = base_length[symbol - 257] + extra_length;
+				// decode distance symbol from stream
+				std::cout << '(' << total_length << ',';
 
+				DecompressHuffmanUpToSymbolCount(bit_reader, distance_canonical_huffman_tree, 1, [&bit_reader, &decompressed_buffer, total_length](uint16_t distance) -> size_t {
+					// TODO: Change ReadNBitsMSBFirst() to return a uint16_t, since we might read up to 13 bits.
+					constexpr auto extra_bits_to_read = std::array{0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13};
+					auto extra_distance = bit_reader.ReadNBitsMSBFirst(extra_bits_to_read[distance]);
+					constexpr auto base_distance = std::array{1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193, 257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145, 8193, 12289, 16385, 24577};
+					auto total_distance = base_distance[distance] + extra_distance;
 
-		decompressed_buffer.emplace_back(1);
+					// move backwards distance bytes, copy |symbol| bytes
+					for (auto i = total_length; i != 0; i--) {
+						decompressed_buffer.emplace_back(decompressed_buffer[decompressed_buffer.size() - total_distance]);
+					}
+
+					std::cout << total_distance << ')';
+					return 1;
+				});
+				return true;
+			}
+		};
+		DecompressHuffman(bit_reader, literal_canonical_huffman_tree, symbol_matched);
 	}
 
 } // anonymous namespace
