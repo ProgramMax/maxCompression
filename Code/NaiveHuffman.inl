@@ -6,7 +6,6 @@ namespace maxCompression {
 
 	template<typename SymbolDecodedCallback>
 	void DecompressHuffmanUpToSymbolCount(BitReader& bit_reader, const CanonicalHuffmanCodeTree& canonical_huffman_code_tree, size_t up_to_symbol_count, SymbolDecodedCallback symbol_decoded_callback) noexcept {
-		auto current_byte = size_t{0};
 		const auto tree_layer_size = canonical_huffman_code_tree.layers_.size();
 		for (auto symbols_left = up_to_symbol_count; symbols_left != 0; ) {
 
