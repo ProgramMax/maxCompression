@@ -11,7 +11,7 @@
 
 namespace {
 
-	constexpr uint16_t operator"" ui16(unsigned long long literal) noexcept {
+	constexpr uint16_t operator"" _ui16(unsigned long long literal) noexcept {
 		return literal;
 	}
 
@@ -190,7 +190,7 @@ namespace {
 			code_lengths.emplace_back(code_length);
 		}
 
-		constexpr auto code_lengths_in_order = std::array{16ui16, 17ui16, 18ui16, 0ui16, 8ui16, 7ui16, 9ui16, 6ui16, 10ui16, 5ui16, 11ui16, 4ui16, 12ui16, 3ui16, 13ui16, 2ui16, 14ui16, 1ui16, 15ui16};
+		constexpr auto code_lengths_in_order = std::array{16_ui16, 17_ui16, 18_ui16, 0_ui16, 8_ui16, 7_ui16, 9_ui16, 6_ui16, 10_ui16, 5_ui16, 11_ui16, 4_ui16, 12_ui16, 3_ui16, 13_ui16, 2_ui16, 14_ui16, 1_ui16, 15_ui16};
 		auto canonical_codes = maxCompression::CanonicalHuffmanCode{std::move(code_lengths), std::vector<uint16_t>{std::begin(code_lengths_in_order), std::end(code_lengths_in_order)}};
 		auto canonical_huffman_tree = PopulateCanonicalHuffmanTree(std::move(canonical_codes));
 
