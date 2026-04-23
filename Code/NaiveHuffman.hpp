@@ -122,7 +122,7 @@ namespace maxCompression {
 	template<typename SymbolDecodedCallback>
 	void DecompressHuffman(BitReader& bit_reader, const CanonicalHuffmanCodeTree& canonical_huffman_code_tree, SymbolDecodedCallback symbol_decoded_callback) noexcept;
 
-	std::vector<uint8_t> DecompressHuffman(BitReader& bit_reader, size_t buffer_size, const CanonicalHuffmanCodeTree& canonical_huffman_code_tree) noexcept;
+	std::vector<uint8_t> DecompressHuffman(BitReader& bit_reader, const CanonicalHuffmanCodeTree& canonical_huffman_code_tree) noexcept;
 
 
 }; // namespace maxCompression
